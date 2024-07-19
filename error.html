@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Custom CSS -->
+    <style>
+        h1 {
+            font-size: 5rem;
+            /* Change this to adjust the size of the h1 text */
+        }
+
+        .form-control {
+            height: 100px;
+            /* Change this to adjust the size of the input field */
+            font-size: 5rem;
+            /* Change this to adjust the size of the input text */
+        }
+
+        .invisible {
+            opacity: 0;
+        }
+    </style>
+    <script>
+        console.log('userEmail: <?= userEmail ?>');
+        console.log('userDomain: <?= userDomain ?>');
+    </script>
+</head>
+
+<body>
+    <div class="container d-flex vh-100">
+        <div class="row justify-content-center w-100">
+            <div class="col-md-10">
+                <h1 class="text-center mb-4">高師大附中 請登入帳號!!</h1>
+                <h1 class="text-center mb-4">學生退款帳號查詢系統 <?= userEmail ?></h1>
+                <h4>請登入帳號!!</h4>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
