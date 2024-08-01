@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Custom CSS -->
+    <style>
+        h1 {
+            font-size: 5rem;
+            /* Change this to adjust the size of the h1 text */
+        }
+
+        .form-control {
+            height: auto;
+            /* Change this to adjust the size of the input field */
+            font-size: 1.5rem;
+            /* Change this to adjust the size of the input text */
+        }
+
+        .invisible {
+            opacity: 0;
+        }
+    </style>
+    <script>
+        function saveStudentAccount() {
+            var classname = document.getElementById('classname').value;
+            var sitenum = document.getElementById('sitenum').value;
+            var studentid = document.getElementById('studentid').value;
+            var studentname = document.getElementById('studentname').value;
+            var personalid = document.getElementById('personalid').value;
+            var bankAccount = document.getElementById('bankAccount').value;
+            var userEmail = document.getElementById('userEmail').value;
+            var paymentMethod = document.getElementById('paymentMethod').value;
+
+            // 获取文件
+            var fileInput1 = document.getElementById('fileUpload1');
+            var fileInput2 = document.getElementById('fileUpload2');
+            var file1 = fileInput1.files[0];
+            var file2 = fileInput2.files[0];
+            var files = [file1, file2];
+            var fileIds = [];
+
+            if (file1 || file2) {
+                var filesProcessed = 0;
+
+                var readFile = function (file, index) {
+                    if (!file) {
+                        fileIds[index] = null;
+                        filesProcessed++;
+                        checkAllFilesProcessed();
+                        return;
+                    }
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var base64Data = e.target.result.split(',')[1];
+                        google.script.run.withSuccessHandler(function (fileId) {
+                            fileIds[index] = fileId;
+                            filesProcessed++;
+                            checkAllFilesProcessed();
+                        }).uploadFile(base64Data, file.name);
+                    };
+                    reader.readAsDataURL(file);
+                };
+
+                var checkAllFilesProcessed = function () {
+                    if (filesProcessed === files.length) {
+                        google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, personalid, null, null, fileIds[0], fileIds[1], null, null);
+                        updateButton();
+                    }
+                };
+
+                for (var i = 0; i < files.length; i++) {
+                    readFile(files[i], i);
+                }
+            } else {
+                // 没有文件时，直接保存银行账户信息
+                google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, personalid, null, null, null, null, null, null);
+                updateButton();
+            }
+        }
+
+        function updateButton() {
+            var saveButton = document.getElementById('saveButton');
+            saveButton.disabled = true;
+            saveButton.innerHTML = '銀行帳號已儲存';
+            saveButton.classList.add('btn-secondary');
+            saveButton.classList.remove('btn-primary');
+        }
+
+        console.log('userEmail: <?= userEmail ?>');
+        console.log('userAccount: <?= userAccount ?>');
+        console.log('userDomain: <?= userDomain ?>');
+    </script>
+</head>
+
+<body>
+    <div class="container d-flex vh-100">
+        <div class="row justify-content-center w-100">
+            <div class="col-md-12">
+                <h1 class="text-center">高師大附中學生退款登記系統</h1>
+                <h1 class="text-center">學生登記表單</h1>
+                <h3>登入帳號:
+                    <?= userEmail ?>
+                </h3>
+                <h3>退款方式 payment:
+                    <?= paymentMethod  ?>
+                </h3>
+                <h3><a
+                        href="https://docs.google.com/document/d/1Lr-_tyDJiHzRGUL8hlE4PXWswF14V6l3/edit?usp=drive_link">附件1-個人資料提供同意書</a>
+                </h3>
+                <div class="input-group col-12">
+                    <input type="hidden" id="userEmail" name="userEmail" class="form-control" value="<?= userEmail ?>">
+                    <input type="hidden" id="paymentMethod" name="paymentMethod" class="form-control"
+                        value="<?= paymentMethod ?>">
+
+                    <div class="form-group col-12">
+                        <label for="classname">班級:</label>
+                        <input type="text" id="classname" name="classname" class="form-control" placeholder="班級">
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="sitenum">座號:</label>
+                        <input type="text" id="sitenum" name="sitenum" class="form-control" placeholder="座號">
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="studentid">學號:</label>
+                        <input type="text" id="studentid" name="studentid" class="form-control" placeholder="學號"
+                            value="<?= userAccount ?>" readonly="readonly">
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="studentname">戶名(需為學生本人):</label>
+                        <input type="text" id="studentname" name="studentname" class="form-control"
+                            placeholder="戶名(需為學生本人)">
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="bankAccount">學生身分證號碼:</label>
+                        <input type="text" id="personalid" name="personalid" class="form-control" placeholder="學生身分證號碼">
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="bankAccount">退款銀行帳戶(郵局請填【局號帳號】，銀行請填【分行與帳號】):</label>
+                        <input type="text" id="bankAccount" name="bankAccount" class="form-control" placeholder="退款帳戶">
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="fileUpload">上傳「匯款帳戶封面檔案」:</label>
+                        <input type="file" id="fileUpload1" name="fileUpload1" class="form-control">
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="fileUpload">上傳「個人資料提供同意書」:</label>
+                        <input type="file" id="fileUpload2" name="fileUpload2" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group col-12">
+                    <button id="saveButton" class="btn btn-primary btn-lg btn-block" onclick="saveStudentAccount()">儲存</button>
+                </div>
+                <h4 id="output"></h4>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

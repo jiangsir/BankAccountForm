@@ -41,24 +41,46 @@
         function displayResult(result) {
             var output = document.getElementById('output');
             if (result) {
-                output.innerHTML = '退款帳號: ' + result;
+                output.innerHTML = '退款方式: ' + result;
             } else {
-                output.innerHTML = `
-<div class="input-group mb-2">
-    <input type="text" id="bankAccount" name="bankAccount" class="form-control" placeholder="輸入退款銀行帳戶">
-    <div class="input-group-append">
-        <button class="btn btn-primary btn-lg" onclick="saveBankAccount()">儲存</button>
-    </div>
-</div>
-    `;
+                output.innerHTML = generateBankAccountForm();
             }
+        }
+
+        function generateBankAccountForm() {
+            return `
+<div class="input-group mb-2">
+    <div class="form-group">
+        <label for="paymentMethod">退款方式:</label>
+        <select id="paymentMethod" name="paymentMethod" class="form-control" onchange="handlePaymentMethodChange()">
+            <option value="----">請選擇退款方式</option>
+            <option value="現金">現金</option>
+            <option value="受款學生本人帳戶">受款學生本人帳戶</option>
+            <option value="法定代理人帳戶">法定代理人帳戶</option>
+        </select>
+    </div>
+</div>`;
+        }
+
+        function handlePaymentMethodChange() {
+            var paymentMethod = document.getElementById('paymentMethod').value;
+            google.script.run.withSuccessHandler(function(html) {
+                document.open();
+                document.write(html);
+                document.close();
+            }).loadFormBasedOnPaymentMethod(paymentMethod);
         }
 
         function saveBankAccount() {
             var studentID = document.getElementById('studentID').value;
+            var classname = document.getElementById('classname').value;
+            var sitenum = document.getElementById('sitenum').value;
+            var studentid = document.getElementById('studentid').value;
+            var studentname = document.getElementById('studentname').value;
             var bankAccount = document.getElementById('bankAccount').value;
             var userEmail = document.getElementById('userEmail').value;
-            google.script.run.saveBankAccount(studentID, bankAccount, userEmail);
+            var paymentMethod = document.getElementById('paymentMethod').value;
+            google.script.run.saveBankAccount(studentID, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname);
             document.getElementById('output').innerHTML = '銀行帳號已儲存';
         }
 
@@ -69,6 +91,11 @@
         //     var checkButton = document.querySelector('.btn-primary');
         //     checkButton.onclick = checkStudentID;
         // };
+
+        window.onload = function () {
+            checkStudentID(); // 页面加载完成后自动调用查询函数
+        };
+        
         console.log('userEmail: <?= userEmail ?>');
         console.log('userAccount: <?= userAccount ?>');
         console.log('userDomain: <?= userDomain ?>');
@@ -78,19 +105,19 @@
 <body>
     <div class="container d-flex vh-100">
         <div class="row justify-content-center w-100">
-            <div class="col-md-10">
-                <h1 class="text-center mb-4">高師大附中</h1>
-                <h1 class="text-center mb-4">學生退款帳號--學生登記表單</h1>
-                <h4>userEmail</h4>
+            <div class="col-md-12">
+                <h1 class="text-center mb-4">高師大附中學生退款登記系統</h1>
+                <h1 class="text-center mb-4">學生登記表單</h1>
+                <h4>登入帳號: <?= userEmail ?></h4>
                 <input type="hidden" id="userEmail" name="userEmail" class="form-control" value="<?= userEmail ?>">
                 <div class="input-group mb-2">
                     <input type="text" id="studentID" name="studentID" class="form-control" placeholder="輸入學號"
-                        value="<?= userAccount ?>">
+                        value="<?= userAccount ?>" readonly="readonly">
                     <div class="input-group-append">
-                        <button class="btn btn-primary btn-lg" onclick="checkStudentID()">查詢</button>
+                        <button class="btn btn-success btn-lg" onclick="checkStudentID()">查詢</button>
                     </div>
                 </div>
-                <div id="output"></div>
+                <h4 id="output"></h4>
             </div>
         </div>
     </div>
