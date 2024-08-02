@@ -22,9 +22,9 @@
         }
 
         .form-control {
-            height: 100px;
+            height: auto;
             /* Change this to adjust the size of the input field */
-            font-size: 5rem;
+            font-size: 1.5rem;
             /* Change this to adjust the size of the input text */
         }
 
@@ -33,15 +33,56 @@
         }
     </style>
     <script>
-        function saveCash() {
+        function showError(message) {
+            var modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = message;
+            $('#errorModal').modal('show');
+        }
+
+        function validateFields() {
             var classname = document.getElementById('classname').value;
             var sitenum = document.getElementById('sitenum').value;
             var studentname = document.getElementById('studentname').value;
             var studentid = document.getElementById('studentid').value;
-            //            var parentname = document.getElementById('parentname').value;
-            //            var parentPid = document.getElementById('parentPid').value;
-            //            var parentBirth = document.getElementById('parentBirth').value;
-            //            var bankAccount = document.getElementById('bankAccount').value;
+            var fileInput1 = document.getElementById('fileUpload1').files.length;
+            var fileInput2 = document.getElementById('fileUpload2').files.length;
+
+            if (!classname) {
+                showError('班級未填寫');
+                return false;
+            }
+            if (!sitenum) {
+                showError('座號未填寫');
+                return false;
+            }
+            if (!studentname) {
+                showError('學生姓名未填寫');
+                return false;
+            }
+            if (!studentid) {
+                showError('學號未填寫');
+                return false;
+            }
+            if (!fileInput1) {
+                showError('「個人資料提供同意書」未選擇');
+                return false;
+            }
+            if (!fileInput2) {
+                showError('「學生各項費用領款及退費採現金方式領取同意書」未選擇');
+                return false;
+            }
+            return true;
+        }
+
+        function saveCash() {
+            if (!validateFields()) {
+                return;
+            }
+
+            var classname = document.getElementById('classname').value;
+            var sitenum = document.getElementById('sitenum').value;
+            var studentname = document.getElementById('studentname').value;
+            var studentid = document.getElementById('studentid').value;
             var userEmail = document.getElementById('userEmail').value;
             var paymentMethod = document.getElementById('paymentMethod').value;
 
@@ -79,7 +120,7 @@
                 var checkAllFilesProcessed = function () {
                     if (filesProcessed === files.length) {
                         google.script.run.saveDatasToSheet(studentid, null, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, null, null, null, fileIds[0], null, fileIds[1]);
-                        document.getElementById('output').innerHTML = '銀行帳號已儲存';
+                        updateButton();
                     }
                 };
 
@@ -89,8 +130,16 @@
             } else {
                 // 没有文件时，直接保存银行账户信息
                 google.script.run.saveDatasToSheet(studentid, null, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, null, null, null, null, null, null);
-                document.getElementById('output').innerHTML = '銀行帳號已儲存';
+                updateButton();
             }
+        }
+
+        function updateButton() {
+            var saveButton = document.getElementById('saveButton');
+            saveButton.disabled = true;
+            saveButton.innerHTML = '資料已儲存';
+            saveButton.classList.add('btn-secondary');
+            saveButton.classList.remove('btn-primary');
         }
 
         console.log('userEmail: <?= userEmail ?>');
@@ -117,41 +166,62 @@
                 <h4><a href="https://docs.google.com/document/d/1fNGUGGtQzxhbxaOgTciAWcqjDpCL9daH/edit?usp=drive_link">附件3-領用現金同意書
                     </a>
                 </h4>
-                <div class=" input-group mb-2">
+                <div class="input-group col-12">
                     <input type="hidden" id="userEmail" name="userEmail" class="form-control" value="<?= userEmail ?>">
                     <input type="hidden" id="paymentMethod" name="paymentMethod" class="form-control"
                         value="<?= paymentMethod ?>">
 
-                    <div class="form-group">
+                    <div class="form-group col-12">
                         <label for="classname">班級:</label>
                         <input type="text" id="classname" name="classname" class="form-control" placeholder="班級">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-12">
                         <label for="sitenum">座號:</label>
                         <input type="text" id="sitenum" name="sitenum" class="form-control" placeholder="座號">
                     </div>
-                    <div class="form-group">
-                        <label for="sitenum">學生姓名:</label>
+                    <div class="form-group col-12">
+                        <label for="studentname">學生姓名:</label>
                         <input type="text" id="studentname" name="studentname" class="form-control" placeholder="學生姓名">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-12">
                         <label for="studentid">學號:</label>
                         <input type="text" id="studentid" name="studentid" class="form-control" placeholder="學號"
                             value="<?= userAccount ?>" readonly="readonly">
                     </div>
-                    <div class="form-group">
-                        <label for="fileUpload">上傳「個人資料提供同意書」:</label>
+                    <div class="form-group col-12">
+                        <label for="fileUpload1">上傳「個人資料提供同意書」:</label>
                         <input type="file" id="fileUpload1" name="fileUpload1" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label for="fileUpload">上傳「學生各項費用領款擊退費採現金方式領取同意書」:</label>
+                    <div class="form-group col-12">
+                        <label for="fileUpload2">上傳「學生各項費用領款及退費採現金方式領取同意書」:</label>
                         <input type="file" id="fileUpload2" name="fileUpload2" class="form-control">
                     </div>
                 </div>
-                <div class="form-group">
-                    <button class="btn btn-primary btn-lg btn-block" onclick="saveCash()">儲存</button>
+                <div class="form-group col-12">
+                    <button id="saveButton" class="btn btn-primary btn-lg btn-block" onclick="saveCash()">儲存</button>
                 </div>
                 <h4 id="output"></h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">錯誤</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- 錯誤消息將顯示在這裡 -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                </div>
             </div>
         </div>
     </div>

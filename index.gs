@@ -7,7 +7,7 @@ function doGet() {
     var userDomain = userEmail.split('@')[1];
     var template;
     if (userDomain === 'stu.nknush.kh.edu.tw') {
-        template = HtmlService.createTemplateFromFile('StudentForm');
+        template = HtmlService.createTemplateFromFile('PaymentForm');
     } else { // 非 tea 就當作 stu
         template = HtmlService.createTemplateFromFile('error');
     }

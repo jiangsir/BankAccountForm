@@ -22,9 +22,9 @@
         }
 
         .form-control {
-            height: 100px;
+            height: auto;
             /* Change this to adjust the size of the input field */
-            font-size: 5rem;
+            font-size: 4rem;
             /* Change this to adjust the size of the input text */
         }
 
@@ -53,7 +53,7 @@
     <div class="form-group">
         <label for="paymentMethod">退款方式:</label>
         <select id="paymentMethod" name="paymentMethod" class="form-control" onchange="handlePaymentMethodChange()">
-            <option value="----">請選擇退款方式</option>
+            <option value="----">-- 請選擇退款方式 --</option>
             <option value="現金">現金</option>
             <option value="受款學生本人帳戶">受款學生本人帳戶</option>
             <option value="法定代理人帳戶">法定代理人帳戶</option>
@@ -70,27 +70,6 @@
                 document.close();
             }).loadFormBasedOnPaymentMethod(paymentMethod);
         }
-
-        function saveBankAccount() {
-            var studentID = document.getElementById('studentID').value;
-            var classname = document.getElementById('classname').value;
-            var sitenum = document.getElementById('sitenum').value;
-            var studentid = document.getElementById('studentid').value;
-            var studentname = document.getElementById('studentname').value;
-            var bankAccount = document.getElementById('bankAccount').value;
-            var userEmail = document.getElementById('userEmail').value;
-            var paymentMethod = document.getElementById('paymentMethod').value;
-            google.script.run.saveBankAccount(studentID, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname);
-            document.getElementById('output').innerHTML = '銀行帳號已儲存';
-        }
-
-        // window.onload = function () {
-        //     var studentID = document.getElementById('studentID');
-        //     studentID.focus();
-
-        //     var checkButton = document.querySelector('.btn-primary');
-        //     checkButton.onclick = checkStudentID;
-        // };
 
         window.onload = function () {
             checkStudentID(); // 页面加载完成后自动调用查询函数

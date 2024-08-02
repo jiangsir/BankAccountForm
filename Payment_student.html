@@ -33,7 +33,62 @@
         }
     </style>
     <script>
+        function showError(message) {
+            var modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = message;
+            $('#errorModal').modal('show');
+        }
+
+        function validateFields() {
+            var classname = document.getElementById('classname').value;
+            var sitenum = document.getElementById('sitenum').value;
+            var studentid = document.getElementById('studentid').value;
+            var studentname = document.getElementById('studentname').value;
+            var personalid = document.getElementById('personalid').value;
+            var bankAccount = document.getElementById('bankAccount').value;
+            var fileInput1 = document.getElementById('fileUpload1').files.length;
+            var fileInput2 = document.getElementById('fileUpload2').files.length;
+
+            if (!classname) {
+                showError('班級未填寫');
+                return false;
+            }
+            if (!sitenum) {
+                showError('座號未填寫');
+                return false;
+            }
+            if (!studentid) {
+                showError('學號未填寫');
+                return false;
+            }
+            if (!studentname) {
+                showError('戶名未填寫');
+                return false;
+            }
+            if (!personalid) {
+                showError('學生身分證號碼未填寫');
+                return false;
+            }
+            if (!bankAccount) {
+                showError('匯款帳號未填寫');
+                return false;
+            }
+            if (!fileInput1) {
+                showError('「匯款帳戶封面檔案」未選擇');
+                return false;
+            }
+            if (!fileInput2) {
+                showError('「個人資料提供同意書」未選擇');
+                return false;
+            }
+            return true;
+        }
+
         function saveStudentAccount() {
+            if (!validateFields()) {
+                return;
+            }
+
             var classname = document.getElementById('classname').value;
             var sitenum = document.getElementById('sitenum').value;
             var studentid = document.getElementById('studentid').value;
@@ -120,6 +175,7 @@
                 <h3><a
                         href="https://docs.google.com/document/d/1Lr-_tyDJiHzRGUL8hlE4PXWswF14V6l3/edit?usp=drive_link">附件1-個人資料提供同意書</a>
                 </h3>
+
                 <div class="input-group col-12">
                     <input type="hidden" id="userEmail" name="userEmail" class="form-control" value="<?= userEmail ?>">
                     <input type="hidden" id="paymentMethod" name="paymentMethod" class="form-control"
@@ -148,15 +204,15 @@
                         <input type="text" id="personalid" name="personalid" class="form-control" placeholder="學生身分證號碼">
                     </div>
                     <div class="form-group col-12">
-                        <label for="bankAccount">退款銀行帳戶(郵局請填【局號帳號】，銀行請填【分行與帳號】):</label>
+                        <label for="bankAccount">匯款帳號(郵局請填局號與帳號;銀行請填匯款銀行、分行與帳號):</label>
                         <input type="text" id="bankAccount" name="bankAccount" class="form-control" placeholder="退款帳戶">
                     </div>
                     <div class="form-group col-12">
-                        <label for="fileUpload">上傳「匯款帳戶封面檔案」:</label>
+                        <label for="fileUpload1">上傳「匯款帳戶封面檔案」:</label>
                         <input type="file" id="fileUpload1" name="fileUpload1" class="form-control">
                     </div>
                     <div class="form-group col-12">
-                        <label for="fileUpload">上傳「個人資料提供同意書」:</label>
+                        <label for="fileUpload2">上傳「個人資料提供同意書」:</label>
                         <input type="file" id="fileUpload2" name="fileUpload2" class="form-control">
                     </div>
                 </div>
@@ -164,6 +220,27 @@
                     <button id="saveButton" class="btn btn-primary btn-lg btn-block" onclick="saveStudentAccount()">儲存</button>
                 </div>
                 <h4 id="output"></h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">錯誤</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- 错误消息将显示在这里 -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                </div>
             </div>
         </div>
     </div>

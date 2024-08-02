@@ -22,9 +22,9 @@
         }
 
         .form-control {
-            height: 100px;
+            height: auto;
             /* Change this to adjust the size of the input field */
-            font-size: 5rem;
+            font-size: 1.5rem;
             /* Change this to adjust the size of the input text */
         }
 
@@ -33,7 +33,77 @@
         }
     </style>
     <script>
+        function showError(message) {
+            var modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = message;
+            $('#errorModal').modal('show');
+        }
+
+        function validateFields() {
+            var classname = document.getElementById('classname').value;
+            var sitenum = document.getElementById('sitenum').value;
+            var studentname = document.getElementById('studentname').value;
+            var studentid = document.getElementById('studentid').value;
+            var parentname = document.getElementById('parentname').value;
+            var parentPid = document.getElementById('parentPid').value;
+            var parentBirth = document.getElementById('parentBirth').value;
+            var bankAccount = document.getElementById('bankAccount').value;
+            var fileInput1 = document.getElementById('fileUpload1').files.length;
+            var fileInput2 = document.getElementById('fileUpload2').files.length;
+            var fileInput3 = document.getElementById('fileUpload3').files.length;
+
+            if (!classname) {
+                showError('班級未填寫');
+                return false;
+            }
+            if (!sitenum) {
+                showError('座號未填寫');
+                return false;
+            }
+            if (!studentname) {
+                showError('學生姓名未填寫');
+                return false;
+            }
+            if (!studentid) {
+                showError('學號未填寫');
+                return false;
+            }
+            if (!parentname) {
+                showError('戶名未填寫');
+                return false;
+            }
+            if (!parentPid) {
+                showError('法定代理人身分證號碼未填寫');
+                return false;
+            }
+            if (!parentBirth) {
+                showError('法定代理人出生年月日未填寫');
+                return false;
+            }
+            if (!bankAccount) {
+                showError('退款銀行帳戶未填寫');
+                return false;
+            }
+            if (!fileInput1) {
+                showError('「匯款帳戶封面檔案」未選擇');
+                return false;
+            }
+            if (!fileInput2) {
+                showError('「個人資料提供同意書」未選擇');
+                return false;
+            }
+            if (!fileInput3) {
+                showError('「可供辨識之法定代理人證明文件」未選擇');
+                return false;
+            }
+            return true;
+        }
+
         function saveParentAccount() {
+            if (!validateFields()) {
+                return;
+            }
+
             var classname = document.getElementById('classname').value;
             var sitenum = document.getElementById('sitenum').value;
             var studentname = document.getElementById('studentname').value;
@@ -81,7 +151,7 @@
                 var checkAllFilesProcessed = function () {
                     if (filesProcessed === files.length) {
                         google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, parentname, parentPid, parentBirth, fileIds[0], fileIds[1], fileIds[2], null);
-                        document.getElementById('output').innerHTML = '銀行帳號已儲存';
+                        updateButton();
                     }
                 };
 
@@ -91,8 +161,16 @@
             } else {
                 // 没有文件时，直接保存银行账户信息
                 google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, parentname, parentPid, parentBirth, null, null, null, null);
-                document.getElementById('output').innerHTML = '銀行帳號已儲存';
+                updateButton();
             }
+        }
+
+        function updateButton() {
+            var saveButton = document.getElementById('saveButton');
+            saveButton.disabled = true;
+            saveButton.innerHTML = '銀行帳號已儲存';
+            saveButton.classList.add('btn-secondary');
+            saveButton.classList.remove('btn-primary');
         }
 
         console.log('userEmail: <?= userEmail ?>');
@@ -119,64 +197,85 @@
                 <h4><a
                         href="https://docs.google.com/document/d/1nIr57ugC1RPoq-iHmChUGYwQJis0Mngp/edit?usp=drive_link">附件2-學生各款項轉帳至非受款人本人帳戶同意書</a>
                 </h4>
-                <div class=" input-group mb-2">
+                <div class="input-group col-12">
                     <input type="hidden" id="userEmail" name="userEmail" class="form-control" value="<?= userEmail ?>">
                     <input type="hidden" id="paymentMethod" name="paymentMethod" class="form-control"
                         value="<?= paymentMethod ?>">
 
-                    <div class="form-group">
+                    <div class="form-group col-12">
                         <label for="classname">班級:</label>
                         <input type="text" id="classname" name="classname" class="form-control" placeholder="班級">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-12">
                         <label for="sitenum">座號:</label>
                         <input type="text" id="sitenum" name="sitenum" class="form-control" placeholder="座號">
                     </div>
-                    <div class="form-group">
-                        <label for="sitenum">學生姓名:</label>
+                    <div class="form-group col-12">
+                        <label for="studentname">學生姓名:</label>
                         <input type="text" id="studentname" name="studentname" class="form-control" placeholder="學生姓名">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-12">
                         <label for="studentid">學號:</label>
                         <input type="text" id="studentid" name="studentid" class="form-control" placeholder="學號"
                             value="<?= userAccount ?>" readonly="readonly">
                     </div>
-                    <div class="form-group">
-                        <label for="studentname">戶名(須為法定代理人姓名):</label>
+                    <div class="form-group col-12">
+                        <label for="parentname">戶名(須為法定代理人姓名):</label>
                         <input type="text" id="parentname" name="parentname" class="form-control"
                             placeholder="戶名(須為法定代理人姓名)">
                     </div>
-                    <div class="form-group">
-                        <label for="bankAccount">法定代理人身分證號碼:</label>
+                    <div class="form-group col-12">
+                        <label for="parentPid">法定代理人身分證號碼:</label>
                         <input type="text" id="parentPid" name="parentPid" class="form-control"
                             placeholder="法定代理人身分證號碼">
                     </div>
-                    <div class="form-group">
-                        <label for="bankAccount">法定代理人出生年月日(格式:1980-02-19):</label>
+                    <div class="form-group col-12">
+                        <label for="parentBirth">法定代理人出生年月日:</label>
                         <input type="date" id="parentBirth" name="parentBirth" class="form-control"
                             placeholder="法定代理人出生年月日">
                     </div>
-                    <div class="form-group">
-                        <label for="bankAccount">退款銀行帳戶(郵局請填【局號帳號】，銀行請填【分行與帳號】):</label>
-                        <input type="text" id="bankAccount" name="bankAccount" class="form-control" placeholder="退款帳戶">
+                    <div class="form-group col-12">
+                        <label for="bankAccount">法定代理人匯款帳號(郵局請填局號與帳號;銀行請填匯款銀行、分行與帳號):</label>
+                        <input type="text" id="bankAccount" name="bankAccount" class="form-control" placeholder="法定代理人匯款帳號">
                     </div>
-                    <div class="form-group">
-                        <label for="fileUpload">上傳「匯款帳戶封面檔案」:</label>
+                    <div class="form-group col-12">
+                        <label for="fileUpload1">上傳「匯款帳戶封面檔案」:</label>
                         <input type="file" id="fileUpload1" name="fileUpload1" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label for="fileUpload">上傳「個人資料提供同意書」:</label>
+                    <div class="form-group col-12">
+                        <label for="fileUpload2">上傳「個人資料提供同意書」:</label>
                         <input type="file" id="fileUpload2" name="fileUpload2" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label for="fileUpload">上傳「可供辨識之法定代理人證明文件」:</label>
+                    <div class="form-group col-12">
+                        <label for="fileUpload3">上傳「可供辨識之法定代理人證明文件」:</label>
                         <input type="file" id="fileUpload3" name="fileUpload3" class="form-control">
                     </div>
                 </div>
-                <div class="form-group">
-                    <button class="btn btn-primary btn-lg btn-block" onclick="saveParentAccount()">儲存</button>
+                <div class="form-group col-12">
+                    <button id="saveButton" class="btn btn-primary btn-lg btn-block" onclick="saveParentAccount()">儲存</button>
                 </div>
                 <h4 id="output"></h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">錯誤</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- 錯誤消息將顯示在這裡 -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                </div>
             </div>
         </div>
     </div>
