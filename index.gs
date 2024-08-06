@@ -5,12 +5,16 @@ function doGet() {
     var userEmail = Session.getActiveUser().getEmail();
     var userAccount = userEmail.split('@')[0];
     var userDomain = userEmail.split('@')[1];
-    var template;
-    if (userDomain === 'stu.nknush.kh.edu.tw') {
-        template = HtmlService.createTemplateFromFile('PaymentForm');
-    } else { // 非 tea 就當作 stu
-        template = HtmlService.createTemplateFromFile('error');
+
+    if (userDomain !== 'stu.nknush.kh.edu.tw') {
+        var errorTemplate = HtmlService.createTemplateFromFile('error');
+        errorTemplate.userEmail = userEmail;
+        errorTemplate.userAccount = userAccount;
+        errorTemplate.userDomain = userDomain;
+        return errorTemplate.evaluate().setTitle('錯誤');
     }
+
+    var template = HtmlService.createTemplateFromFile('PaymentForm');
     template.userEmail = userEmail;
     template.userAccount = userAccount;
     template.userDomain = userDomain;
