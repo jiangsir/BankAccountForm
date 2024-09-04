@@ -18,7 +18,7 @@ conda activate appsscript
 node -v
 npm install -g @google/clasp
 
-# 登入 555@tea
+# 登入 555@stu
 clasp login
 555@stu.nknush.kh.edu.tw
 

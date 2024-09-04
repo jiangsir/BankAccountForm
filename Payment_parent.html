@@ -103,6 +103,7 @@
             if (!validateFields()) {
                 return;
             }
+            updatingButton();
 
             var classname = document.getElementById('classname').value;
             var sitenum = document.getElementById('sitenum').value;
@@ -165,6 +166,15 @@
             }
         }
 
+        function updatingButton() {
+            var saveButton = document.getElementById('saveButton');
+            saveButton.disabled = true;
+            saveButton.innerHTML = '銀行帳號儲存中...';
+            saveButton.classList.add('btn-secondary');
+            saveButton.classList.remove('btn-primary');
+        }
+
+
         function updateButton() {
             var saveButton = document.getElementById('saveButton');
             saveButton.disabled = true;
@@ -184,7 +194,7 @@
         <div class="row justify-content-center w-100">
             <div class="col-md-12">
                 <h1 class="text-center mb-4">國立高雄師大附中</h1>
-                <h1 class="text-center mb-4">學生各項費用領款及退費登記系統</h1>
+                <h2 class="text-center mb-4">學生各項費用領款及退費登記系統</h2>
                 <h4>登入帳號:
                     <?= userEmail ?>
                 </h4>
