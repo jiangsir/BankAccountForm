@@ -120,7 +120,7 @@
 
                 var checkAllFilesProcessed = function () {
                     if (filesProcessed === files.length) {
-                        google.script.run.saveDatasToSheet(studentid, null, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, null, null, null, fileIds[0], null, fileIds[1]);
+                        google.script.run.saveDatasToSheet(studentid, null, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, null, null, null, null, fileIds[0], null, fileIds[1]);
                         updateButton();
                     }
                 };
@@ -130,7 +130,7 @@
                 }
             } else {
                 // 没有文件时，直接保存银行账户信息
-                google.script.run.saveDatasToSheet(studentid, null, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, null, null, null, null, null, null);
+                google.script.run.saveDatasToSheet(studentid, null, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, null, null, null, null, null, null, null);
                 updateButton();
             }
         }

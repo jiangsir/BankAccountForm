@@ -44,7 +44,7 @@
             var sitenum = document.getElementById('sitenum').value;
             var studentname = document.getElementById('studentname').value;
             var studentid = document.getElementById('studentid').value;
-            var parentname = document.getElementById('parentname').value;
+            var accountname = document.getElementById('accountname').value;
             var parentPid = document.getElementById('parentPid').value;
             var parentBirth = document.getElementById('parentBirth').value;
             var bankAccount = document.getElementById('bankAccount').value;
@@ -68,8 +68,8 @@
                 showError('學號未填寫');
                 return false;
             }
-            if (!parentname) {
-                showError('戶名未填寫');
+            if (!accountname) {
+                showError('帳戶姓名未填寫');
                 return false;
             }
             if (!parentPid) {
@@ -109,7 +109,7 @@
             var sitenum = document.getElementById('sitenum').value;
             var studentname = document.getElementById('studentname').value;
             var studentid = document.getElementById('studentid').value;
-            var parentname = document.getElementById('parentname').value;
+            var accountname = document.getElementById('accountname').value;
             var parentPid = document.getElementById('parentPid').value;
             var parentBirth = document.getElementById('parentBirth').value;
             var bankAccount = document.getElementById('bankAccount').value;
@@ -151,7 +151,7 @@
 
                 var checkAllFilesProcessed = function () {
                     if (filesProcessed === files.length) {
-                        google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, parentname, parentPid, parentBirth, fileIds[0], fileIds[1], fileIds[2], null);
+                        google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, accountname, parentPid, parentBirth, fileIds[0], fileIds[1], fileIds[2], null);
                         updateButton();
                     }
                 };
@@ -161,7 +161,7 @@
                 }
             } else {
                 // 没有文件时，直接保存银行账户信息
-                google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, parentname, parentPid, parentBirth, null, null, null, null);
+                google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, accountname, parentPid, parentBirth, null, null, null, null);
                 updateButton();
             }
         }
@@ -230,8 +230,8 @@
                             value="<?= userAccount ?>" readonly="readonly">
                     </div>
                     <div class="form-group col-12">
-                        <label for="parentname">戶名(須為法定代理人姓名):</label>
-                        <input type="text" id="parentname" name="parentname" class="form-control"
+                        <label for="accountname">戶名(須為法定代理人姓名):</label>
+                        <input type="text" id="accountname" name="accountname" class="form-control"
                             placeholder="戶名(須為法定代理人姓名)">
                     </div>
                     <div class="form-group col-12">

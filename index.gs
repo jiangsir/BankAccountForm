@@ -57,13 +57,17 @@ function getBankAccount(studentID) {
 //     Logger.log('Bank account saved successfully');
 // }
 
-function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, parentname, parentPid, parentBirth, fileId1, fileId2, fileId3, fileId4) {
+
+//                          學號	    退款帳戶	登入身份	退款方式       班級	     座號	  學號	      學生姓名	       學生身分證 帳戶姓名	法定代理人身分證號碼	法定代理人生日	上傳附件1	上傳附件2	上傳附件3	上傳附件4
+function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, studentPid, accountname, parentPid, parentBirth, fileId1, fileId2, fileId3, fileId4) {
     Logger.log('Saving bank account for student ID: ' + studentID);
     var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
     if (!sheet) {
         Logger.log('Sheet not found!');
         return 'Sheet not found!';
     }
+    var timestamp = new Date();
+
     var fileUrl1 = fileId1 ? 'https://drive.google.com/file/d/' + fileId1 + '/view' : '';
     var fileLink1 = fileId1 ? '=HYPERLINK("' + fileUrl1 + '", "查看匯款帳戶封面檔案")' : '';
     var fileUrl2 = fileId2 ? 'https://drive.google.com/file/d/' + fileId2 + '/view' : '';
@@ -72,8 +76,8 @@ function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, clas
     var fileLink3 = fileId3 ? '=HYPERLINK("' + fileUrl3 + '", "查看可供辨識之法定代理人證明文件")' : '';
     var fileUrl4 = fileId4 ? 'https://drive.google.com/file/d/' + fileId4 + '/view' : '';
     var fileLink4 = fileId4 ? '=HYPERLINK("' + fileUrl4 + '", "學生各項費用領款擊退費採現金方式領取同意書")' : '';
-
-    sheet.appendRow([studentID, paymentMethod, bankAccount, userEmail, classname, sitenum, studentid, studentname, parentname, parentPid, parentBirth, fileLink1, fileLink2, fileLink3, fileLink4]);
+    //                 時間         學號	退款方式	    退款帳戶	登入身份	班級	     座號	  學號	      學生姓名	     帳戶姓名  學生身分證 	法定代理人身分證號碼	法定代理人生日	上傳附件1	上傳附件2	上傳附件3	上傳附件4
+    sheet.appendRow([timestamp, `'${studentID}`, paymentMethod, `'${bankAccount}`, userEmail, classname, `'${sitenum}`, `'${studentid}`, studentname, accountname, studentPid, parentPid, parentBirth, fileLink1, fileLink2, fileLink3, fileLink4]);
     Logger.log('Bank account saved successfully');
 }
 

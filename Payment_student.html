@@ -43,8 +43,8 @@
             var classname = document.getElementById('classname').value;
             var sitenum = document.getElementById('sitenum').value;
             var studentid = document.getElementById('studentid').value;
-            var studentname = document.getElementById('studentname').value;
-            var personalid = document.getElementById('personalid').value;
+            var accountname = document.getElementById('accountname').value;
+            var studentPid = document.getElementById('studentPid').value;
             var bankAccount = document.getElementById('bankAccount').value;
             var fileInput1 = document.getElementById('fileUpload1').files.length;
             var fileInput2 = document.getElementById('fileUpload2').files.length;
@@ -61,11 +61,11 @@
                 showError('學號未填寫');
                 return false;
             }
-            if (!studentname) {
-                showError('戶名未填寫');
+            if (!accountname) {
+                showError('帳戶姓名未填寫');
                 return false;
             }
-            if (!personalid) {
+            if (!studentPid) {
                 showError('學生身分證號碼未填寫');
                 return false;
             }
@@ -93,13 +93,13 @@
             var classname = document.getElementById('classname').value;
             var sitenum = document.getElementById('sitenum').value;
             var studentid = document.getElementById('studentid').value;
-            var studentname = document.getElementById('studentname').value;
-            var personalid = document.getElementById('personalid').value;
+            var accountname = document.getElementById('accountname').value;
+            var studentPid = document.getElementById('studentPid').value;
             var bankAccount = document.getElementById('bankAccount').value;
             var userEmail = document.getElementById('userEmail').value;
             var paymentMethod = document.getElementById('paymentMethod').value;
 
-            // 获取文件
+            // 獲取文件
             var fileInput1 = document.getElementById('fileUpload1');
             var fileInput2 = document.getElementById('fileUpload2');
             var file1 = fileInput1.files[0];
@@ -132,7 +132,8 @@
 
                 var checkAllFilesProcessed = function () {
                     if (filesProcessed === files.length) {
-                        google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, personalid, null, null, fileIds[0], fileIds[1], null, null);
+                        //                                   學號	    退款帳戶	登入身份	退款方式       班級	     座號	  學號	      學生姓名	       學生身分證 帳戶姓名	法定代理人身分證號碼	法定代理人生日	上傳附件1	上傳附件2	上傳附件3	上傳附件4
+                        google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, accountname, studentPid, accountname, null, null, fileIds[0], fileIds[1], null, null);
                         updateButton();
                     }
                 };
@@ -141,8 +142,8 @@
                     readFile(files[i], i);
                 }
             } else {
-                // 没有文件时，直接保存银行账户信息
-                google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, personalid, null, null, null, null, null, null);
+                        //                                   學號	    退款帳戶	登入身份	退款方式       班級	     座號	  學號	      學生姓名	       學生身分證 帳戶姓名	法定代理人身分證號碼	法定代理人生日	上傳附件1	上傳附件2	上傳附件3	上傳附件4
+                        google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, accountname, studentPid, accountname, null, null, null, null, null, null);
                 updateButton();
             }
         }
@@ -178,7 +179,7 @@
                 <h3>登入帳號:
                     <?= userEmail ?>
                 </h3>
-                <h3>退款方式 payment:
+                <h3>匯款方式 payment:
                     <?= paymentMethod  ?>
                 </h3>
                 <h3><a
@@ -204,17 +205,17 @@
                             value="<?= userAccount ?>" readonly="readonly">
                     </div>
                     <div class="form-group col-12">
-                        <label for="studentname">戶名(需為學生本人):</label>
-                        <input type="text" id="studentname" name="studentname" class="form-control"
+                        <label for="accountname">戶名(需為學生本人):</label>
+                        <input type="text" id="accountname" name="accountname" class="form-control"
                             placeholder="戶名(需為學生本人)">
                     </div>
                     <div class="form-group col-12">
-                        <label for="bankAccount">學生身分證號碼:</label>
-                        <input type="text" id="personalid" name="personalid" class="form-control" placeholder="學生身分證號碼">
+                        <label for="studentPid">學生身分證號碼:</label>
+                        <input type="text" id="studentPid" name="studentPid" class="form-control" placeholder="學生身分證號碼">
                     </div>
                     <div class="form-group col-12">
                         <label for="bankAccount">匯款帳號(郵局請填局號與帳號;銀行請填匯款銀行、分行與帳號):</label>
-                        <input type="text" id="bankAccount" name="bankAccount" class="form-control" placeholder="退款帳戶">
+                        <input type="text" id="bankAccount" name="bankAccount" class="form-control" placeholder="匯款帳戶">
                     </div>
                     <div class="form-group col-12">
                         <label for="fileUpload1">上傳「匯款帳戶封面檔案」:</label>
@@ -226,7 +227,8 @@
                     </div>
                 </div>
                 <div class="form-group col-12">
-                    <button id="saveButton" class="btn btn-primary btn-lg btn-block" onclick="saveStudentAccount()">儲存</button>
+                    <button id="saveButton" class="btn btn-primary btn-lg btn-block"
+                        onclick="saveStudentAccount()">儲存</button>
                 </div>
                 <h4 id="output"></h4>
             </div>
