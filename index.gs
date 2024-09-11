@@ -32,9 +32,9 @@ function getBankAccount(studentID) {
 
     var data = sheet.getDataRange().getValues();
     for (var i = 1; i < data.length; i++) {
-        if (data[i][0] == studentID) {
-            Logger.log('Found studentID' + data[i][0] + ' bank account: ' + data[i][1]);
-            return data[i][1] + ':' + data[i][2]; // 返回銀行帳號
+        if (data[i][1] == studentID) { // data[i][1] 代表 背後資料表的第二個欄位
+            Logger.log('Found studentID' + data[i][1] + ' bank account: ' + data[i][2]);
+            return data[i][2] + ':' + data[i][3]; // 返回銀行帳號
         }
     }
     Logger.log('Student ID:' + studentID + ' not found');
