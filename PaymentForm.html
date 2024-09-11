@@ -41,7 +41,7 @@
         function displayResult(result) {
             var output = document.getElementById('output');
             if (result) {
-                output.innerHTML = '退款方式: ' + result;
+                output.innerHTML = '您已填報完畢。填報的匯款方式為 ' + result;
             } else {
                 output.innerHTML = generateBankAccountForm();
             }
@@ -51,9 +51,9 @@
             return `
 <div class="input-group mb-2">
     <div class="form-group">
-        <label for="paymentMethod">退款方式:</label>
+        <label for="paymentMethod">匯款方式:</label>
         <select id="paymentMethod" name="paymentMethod" class="form-control" onchange="handlePaymentMethodChange()">
-            <option value="----">-- 請選擇退款方式 --</option>
+            <option value="----">-- 請選擇匯款方式 --</option>
             <option value="現金">現金</option>
             <option value="受款學生本人帳戶">受款學生本人帳戶</option>
             <option value="法定代理人帳戶">法定代理人帳戶</option>
