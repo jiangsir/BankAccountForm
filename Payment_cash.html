@@ -44,8 +44,8 @@
             var sitenum = document.getElementById('sitenum').value;
             var studentname = document.getElementById('studentname').value;
             var studentid = document.getElementById('studentid').value;
-            var fileInput1 = document.getElementById('fileUpload1').files.length;
-            var fileInput2 = document.getElementById('fileUpload2').files.length;
+            var fileInput1 = document.getElementById('fileAttachment1').files.length;
+            var fileInput2 = document.getElementById('fileAttachment3').files.length;
 
             if (!classname) {
                 showError('班級未填寫');
@@ -64,11 +64,11 @@
                 return false;
             }
             if (!fileInput1) {
-                showError('「個人資料提供同意書」未選擇');
+                showError('「附件1」未選擇');
                 return false;
             }
             if (!fileInput2) {
-                showError('「學生各項費用領款及退費採現金方式領取同意書」未選擇');
+                showError('「附件3」未選擇');
                 return false;
             }
             return true;
