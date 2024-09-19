@@ -88,8 +88,8 @@
             var paymentMethod = document.getElementById('paymentMethod').value;
 
             // 获取文件
-            var fileInput1 = document.getElementById('fileUpload1');
-            var fileInput2 = document.getElementById('fileUpload2');
+            var fileInput1 = document.getElementById('fileAttachment1');
+            var fileInput2 = document.getElementById('fileAttachment3');
             var file1 = fileInput1.files[0];
             var file2 = fileInput2.files[0];
             var files = [file1, file2];
@@ -120,7 +120,7 @@
 
                 var checkAllFilesProcessed = function () {
                     if (filesProcessed === files.length) {
-                        google.script.run.saveDatasToSheet(studentid, null, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, null, null, null, null, fileIds[0], null, fileIds[1]);
+                        google.script.run.saveDatasToSheet(studentid, null, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, null, null, null, null, null, fileIds[0], null, fileIds[1]);
                         updateButton();
                     }
                 };
@@ -130,7 +130,7 @@
                 }
             } else {
                 // 没有文件时，直接保存银行账户信息
-                google.script.run.saveDatasToSheet(studentid, null, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, null, null, null, null, null, null, null);
+                google.script.run.saveDatasToSheet(studentid, null, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, null, null, null, null, null, null, null, null);
                 updateButton();
             }
         }
@@ -165,14 +165,8 @@
                 <h4>登入帳號:
                     <?= userEmail ?>
                 </h4>
-                <h6>匯款方式:
+                <h4>匯款方式:
                     <?= paymentMethod  ?>
-                </h6>
-                <h4><a
-                        href="https://docs.google.com/document/d/1Lr-_tyDJiHzRGUL8hlE4PXWswF14V6l3/edit?usp=drive_link">附件1-個人資料提供同意書</a>
-                </h4>
-                <h4><a href="https://docs.google.com/document/d/1fNGUGGtQzxhbxaOgTciAWcqjDpCL9daH/edit?usp=drive_link">附件3-領用現金同意書
-                    </a>
                 </h4>
                 <div class="input-group col-12">
                     <input type="hidden" id="userEmail" name="userEmail" class="form-control" value="<?= userEmail ?>">
@@ -197,12 +191,20 @@
                             value="<?= userAccount ?>" readonly="readonly">
                     </div>
                     <div class="form-group col-12">
-                        <label for="fileUpload1">上傳「個人資料提供同意書」:</label>
-                        <input type="file" id="fileUpload1" name="fileUpload1" class="form-control">
+                        <h4>
+                            <a
+                                href="https://docs.google.com/document/d/1Lr-_tyDJiHzRGUL8hlE4PXWswF14V6l3/edit?usp=drive_link">附件1-個人資料提供同意書</a>
+                        </h4>
+                        <label for="fileAttachment1">上傳「附件1-個人資料提供同意書」:</label>
+                        <input type="file" id="fileAttachment1" name="fileAttachment1" class="form-control">
                     </div>
                     <div class="form-group col-12">
-                        <label for="fileUpload2">上傳「學生各項費用領款及退費採現金方式領取同意書」:</label>
-                        <input type="file" id="fileUpload2" name="fileUpload2" class="form-control">
+                        <h4><a
+                                href="https://docs.google.com/document/d/1fNGUGGtQzxhbxaOgTciAWcqjDpCL9daH/edit?usp=drive_link">附件3-領用現金同意書
+                            </a>
+                        </h4>
+                        <label for="fileAttachment3">上傳「附件3-領用現金同意書」:</label>
+                        <input type="file" id="fileAttachment3" name="fileAttachment3" class="form-control">
                     </div>
                 </div>
                 <div class="form-group col-12">

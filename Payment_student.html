@@ -101,7 +101,7 @@
 
             // 獲取文件
             var fileInput1 = document.getElementById('fileUpload1');
-            var fileInput2 = document.getElementById('fileUpload2');
+            var fileInput2 = document.getElementById('fileAttachment1');
             var file1 = fileInput1.files[0];
             var file2 = fileInput2.files[0];
             var files = [file1, file2];
@@ -132,8 +132,8 @@
 
                 var checkAllFilesProcessed = function () {
                     if (filesProcessed === files.length) {
-                        //                                   學號	    退款帳戶	登入身份	退款方式       班級	     座號	  學號	      學生姓名	       學生身分證 帳戶姓名	法定代理人身分證號碼	法定代理人生日	上傳附件1	上傳附件2	上傳附件3	上傳附件4
-                        google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, accountname, studentPid, accountname, null, null, fileIds[0], fileIds[1], null, null);
+                        //                                   學號	    退款帳戶	登入身份	退款方式       班級	     座號	  學號	      學生姓名	       學生身分證 帳戶姓名	法定代理人身分證號碼	法定代理人生日	上傳1	上傳2	附件1	附件2  附件3
+                        google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, accountname, studentPid, accountname, null, null, fileIds[0], null, fileIds[1], null, null);
                         updateButton();
                     }
                 };
@@ -142,8 +142,8 @@
                     readFile(files[i], i);
                 }
             } else {
-                        //                                   學號	    退款帳戶	登入身份	退款方式       班級	     座號	  學號	      學生姓名	       學生身分證 帳戶姓名	法定代理人身分證號碼	法定代理人生日	上傳附件1	上傳附件2	上傳附件3	上傳附件4
-                        google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, accountname, studentPid, accountname, null, null, null, null, null, null);
+                //                                   學號	    退款帳戶	登入身份	退款方式       班級	     座號	  學號	      學生姓名	       學生身分證 帳戶姓名	法定代理人身分證號碼	法定代理人生日	上傳附件1	上傳附件2	上傳附件3	上傳附件4
+                google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, accountname, studentPid, accountname, null, null, null, null, null, null, null);
                 updateButton();
             }
         }
@@ -176,15 +176,12 @@
             <div class="col-md-12">
                 <h1 class="text-center mb-4">國立高雄師大附中</h1>
                 <h2 class="text-center mb-4">學生各項費用領款及退費登記系統</h2>
-                <h3>登入帳號:
+                <h4>登入帳號:
                     <?= userEmail ?>
-                </h3>
-                <h3>匯款方式 payment:
+                </h4>
+                <h4>匯款方式:
                     <?= paymentMethod  ?>
-                </h3>
-                <h3><a
-                        href="https://docs.google.com/document/d/1Lr-_tyDJiHzRGUL8hlE4PXWswF14V6l3/edit?usp=drive_link">附件1-個人資料提供同意書</a>
-                </h3>
+                </h4>
 
                 <div class="input-group col-12">
                     <input type="hidden" id="userEmail" name="userEmail" class="form-control" value="<?= userEmail ?>">
@@ -222,8 +219,11 @@
                         <input type="file" id="fileUpload1" name="fileUpload1" class="form-control">
                     </div>
                     <div class="form-group col-12">
-                        <label for="fileUpload2">上傳「個人資料提供同意書」:</label>
-                        <input type="file" id="fileUpload2" name="fileUpload2" class="form-control">
+                        <h4><a
+                                href="https://docs.google.com/document/d/1Lr-_tyDJiHzRGUL8hlE4PXWswF14V6l3/edit?usp=drive_link">附件1-個人資料提供同意書</a>
+                        </h4>
+                        <label for="fileAttachment1">上傳「附件1-個人資料提供同意書」:</label>
+                        <input type="file" id="fileAttachment1" name="fileAttachment1" class="form-control">
                     </div>
                 </div>
                 <div class="form-group col-12">
