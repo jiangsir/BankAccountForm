@@ -59,7 +59,7 @@ function getBankAccount(studentID) {
 
 
 //                          學號	    退款帳戶	登入身份	退款方式       班級	     座號	  學號	      學生姓名	       學生身分證 帳戶姓名	法定代理人身分證號碼	法定代理人生日	上傳附件1	上傳附件2	上傳附件3	上傳附件4
-function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, studentPid, accountname, parentPid, parentBirth, fileId1, fileId2, fileId3, fileId4) {
+function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, studentPid, accountname, parentPid, parentBirth, fileUpload1, fileUpload2, fileAttachment1, fileAttachment2, fileAttachment3) {
     Logger.log('Saving bank account for student ID: ' + studentID);
     var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
     if (!sheet) {
@@ -73,11 +73,13 @@ function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, clas
     var fileUrl2 = fileId2 ? 'https://drive.google.com/file/d/' + fileId2 + '/view' : '';
     var fileLink2 = fileId2 ? '=HYPERLINK("' + fileUrl2 + '", "查看個人資料提供同意書")' : '';
     var fileUrl3 = fileId3 ? 'https://drive.google.com/file/d/' + fileId3 + '/view' : '';
-    var fileLink3 = fileId3 ? '=HYPERLINK("' + fileUrl3 + '", "查看可供辨識之法定代理人證明文件")' : '';
+    var fileLink3 = fileId3 ? '=HYPERLINK("' + fileUrl3 + '", "附件1:個人資料提供同意書")' : '';
     var fileUrl4 = fileId4 ? 'https://drive.google.com/file/d/' + fileId4 + '/view' : '';
-    var fileLink4 = fileId4 ? '=HYPERLINK("' + fileUrl4 + '", "學生各項費用領款擊退費採現金方式領取同意書")' : '';
-    //                 時間         學號	退款方式	    退款帳戶	登入身份	班級	     座號	  學號	      學生姓名	     帳戶姓名  學生身分證 	法定代理人身分證號碼	法定代理人生日	上傳附件1	上傳附件2	上傳附件3	上傳附件4
-    sheet.appendRow([timestamp, `'${studentID}`, paymentMethod, `'${bankAccount}`, userEmail, classname, `'${sitenum}`, `'${studentid}`, studentname, accountname, studentPid, parentPid, parentBirth, fileLink1, fileLink2, fileLink3, fileLink4]);
+    var fileLink4 = fileId4 ? '=HYPERLINK("' + fileUrl4 + '", "附件2:學生各款項轉帳至非受款人本人帳戶同意書")' : '';
+    var fileUrl5 = fileId5 ? 'https://drive.google.com/file/d/' + fileId5 + '/view' : '';
+    var fileLink5 = fileId5 ? '=HYPERLINK("' + fileUrl5 + '", "附件3:領用現金同意書")' : '';
+    //                 時間         學號	退款方式	    退款帳戶	登入身份	班級	     座號	  學號	      學生姓名	     帳戶姓名  學生身分證 	法定代理人身分證號碼	法定代理人生日	             上傳1	    上傳2	    附件1	   附件2       附件3
+    sheet.appendRow([timestamp, `'${studentID}`, paymentMethod, `'${bankAccount}`, userEmail, classname, `'${sitenum}`, `'${studentid}`, studentname, accountname, studentPid, parentPid, parentBirth, fileLink1, fileLink2, fileLink3, fileLink4, fileLink5]);
     Logger.log('Bank account saved successfully');
 }
 
