@@ -50,7 +50,8 @@
             var bankAccount = document.getElementById('bankAccount').value;
             var fileInput1 = document.getElementById('fileUpload1').files.length;
             var fileInput2 = document.getElementById('fileUpload2').files.length;
-            var fileInput3 = document.getElementById('fileUpload3').files.length;
+            var fileInput3 = document.getElementById('fileAttachment1').files.length;
+            var fileInput4 = document.getElementById('fileAttachment2').files.length;
 
             if (!classname) {
                 showError('班級未填寫');
@@ -89,11 +90,15 @@
                 return false;
             }
             if (!fileInput2) {
-                showError('「個人資料提供同意書」未選擇');
+                showError('「可供辨識之法定代理人證明文件」未選擇');
                 return false;
             }
             if (!fileInput3) {
-                showError('「可供辨識之法定代理人證明文件」未選擇');
+                showError('「附件1」未選擇');
+                return false;
+            }
+            if (!fileInput4) {
+                showError('「附件2」未選擇');
                 return false;
             }
             return true;
