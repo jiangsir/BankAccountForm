@@ -68,16 +68,16 @@ function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, clas
     }
     var timestamp = new Date();
 
-    var fileUrl1 = fileId1 ? 'https://drive.google.com/file/d/' + fileId1 + '/view' : '';
-    var fileLink1 = fileId1 ? '=HYPERLINK("' + fileUrl1 + '", "查看匯款帳戶封面檔案")' : '';
-    var fileUrl2 = fileId2 ? 'https://drive.google.com/file/d/' + fileId2 + '/view' : '';
-    var fileLink2 = fileId2 ? '=HYPERLINK("' + fileUrl2 + '", "查看個人資料提供同意書")' : '';
-    var fileUrl3 = fileId3 ? 'https://drive.google.com/file/d/' + fileId3 + '/view' : '';
-    var fileLink3 = fileId3 ? '=HYPERLINK("' + fileUrl3 + '", "附件1:個人資料提供同意書")' : '';
-    var fileUrl4 = fileId4 ? 'https://drive.google.com/file/d/' + fileId4 + '/view' : '';
-    var fileLink4 = fileId4 ? '=HYPERLINK("' + fileUrl4 + '", "附件2:學生各款項轉帳至非受款人本人帳戶同意書")' : '';
-    var fileUrl5 = fileId5 ? 'https://drive.google.com/file/d/' + fileId5 + '/view' : '';
-    var fileLink5 = fileId5 ? '=HYPERLINK("' + fileUrl5 + '", "附件3:領用現金同意書")' : '';
+    var fileUrl1 = fileUpload1 ? 'https://drive.google.com/file/d/' + fileUpload1 + '/view' : '';
+    var fileLink1 = fileUpload1 ? '=HYPERLINK("' + fileUrl1 + '", "查看匯款帳戶封面檔案")' : '';
+    var fileUrl2 = fileUpload2 ? 'https://drive.google.com/file/d/' + fileUpload2 + '/view' : '';
+    var fileLink2 = fileUpload2 ? '=HYPERLINK("' + fileUrl2 + '", "查看可供辨識之法定代理人證明文件")' : '';
+    var fileUrl3 = fileAttachment1 ? 'https://drive.google.com/file/d/' + fileAttachment1 + '/view' : '';
+    var fileLink3 = fileAttachment1 ? '=HYPERLINK("' + fileUrl3 + '", "附件1:個人資料提供同意書")' : '';
+    var fileUrl4 = fileAttachment2 ? 'https://drive.google.com/file/d/' + fileAttachment2 + '/view' : '';
+    var fileLink4 = fileAttachment2 ? '=HYPERLINK("' + fileUrl4 + '", "附件2:學生各款項轉帳至非受款人本人帳戶同意書")' : '';
+    var fileUrl5 = fileAttachment3 ? 'https://drive.google.com/file/d/' + fileAttachment3 + '/view' : '';
+    var fileLink5 = fileAttachment3 ? '=HYPERLINK("' + fileUrl5 + '", "附件3:領用現金同意書")' : '';
     //                 時間         學號	退款方式	    退款帳戶	登入身份	班級	     座號	  學號	      學生姓名	     帳戶姓名  學生身分證 	法定代理人身分證號碼	法定代理人生日	             上傳1	    上傳2	    附件1	   附件2       附件3
     sheet.appendRow([timestamp, `'${studentID}`, paymentMethod, `'${bankAccount}`, userEmail, classname, `'${sitenum}`, `'${studentid}`, studentname, accountname, studentPid, parentPid, parentBirth, fileLink1, fileLink2, fileLink3, fileLink4, fileLink5]);
     Logger.log('Bank account saved successfully');
