@@ -69,9 +69,9 @@ function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, clas
     var timestamp = new Date();
 
     var fileUrl1 = fileUpload1 ? 'https://drive.google.com/file/d/' + fileUpload1 + '/view' : '';
-    var fileLink1 = fileUpload1 ? '=HYPERLINK("' + fileUrl1 + '", "查看匯款帳戶封面檔案")' : '';
+    var fileLink1 = fileUpload1 ? '=HYPERLINK("' + fileUrl1 + '", "匯款帳戶封面檔案")' : '';
     var fileUrl2 = fileUpload2 ? 'https://drive.google.com/file/d/' + fileUpload2 + '/view' : '';
-    var fileLink2 = fileUpload2 ? '=HYPERLINK("' + fileUrl2 + '", "查看可供辨識之法定代理人證明文件")' : '';
+    var fileLink2 = fileUpload2 ? '=HYPERLINK("' + fileUrl2 + '", "可供辨識之法定代理人證明文件")' : '';
     var fileUrl3 = fileAttachment1 ? 'https://drive.google.com/file/d/' + fileAttachment1 + '/view' : '';
     var fileLink3 = fileAttachment1 ? '=HYPERLINK("' + fileUrl3 + '", "附件1:個人資料提供同意書")' : '';
     var fileUrl4 = fileAttachment2 ? 'https://drive.google.com/file/d/' + fileAttachment2 + '/view' : '';
