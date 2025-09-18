@@ -6,21 +6,32 @@ function doGet() {
     var userAccount = userEmail.split('@')[0];
     var userDomain = userEmail.split('@')[1];
 
+    // 檢查是否為有效的學生帳號
     if (userDomain !== 'stu.nknush.kh.edu.tw') {
         var errorTemplate = HtmlService.createTemplateFromFile('error');
         errorTemplate.userEmail = userEmail;
         errorTemplate.userAccount = userAccount;
         errorTemplate.userDomain = userDomain;
-        return errorTemplate.evaluate().setTitle('錯誤');
+        errorTemplate.getScriptUrl = getScriptUrl; // 加入這行
+        return errorTemplate.evaluate()
+            .setTitle('登入驗證 - 國立高雄師大附中')
+            .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
     }
 
+    // 如果是有效帳號，顯示表單
     var template = HtmlService.createTemplateFromFile('PaymentForm');
     template.userEmail = userEmail;
     template.userAccount = userAccount;
     template.userDomain = userDomain;
-    return template.evaluate().setTitle('表單填寫');
+    return template.evaluate()
+        .setTitle('學生各項費用領款及退費登記系統')
+        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
+// 新增這個輔助函數
+function getScriptUrl() {
+    return ScriptApp.getService().getUrl();
+}
 
 function getBankAccount(studentID) {
     Logger.log('Checking student ID: ' + studentID);
@@ -41,24 +52,6 @@ function getBankAccount(studentID) {
     return null; // 如果沒有找到學號，返回 null
 }
 
-// function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, personalid, fileId1, fileId2) {
-//     Logger.log('Saving bank account for student ID: ' + studentID);
-//     var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
-//     if (!sheet) {
-//         Logger.log('Sheet not found!');
-//         return 'Sheet not found!';
-//     }
-//     var fileUrl1 = fileId1 ? 'https://drive.google.com/file/d/' + fileId1 + '/view' : '';
-//     var fileLink1 = fileId1 ? '=HYPERLINK("' + fileUrl1 + '", "查看匯款帳戶封面檔案")' : '';
-//     var fileUrl2 = fileId2 ? 'https://drive.google.com/file/d/' + fileId2 + '/view' : '';
-//     var fileLink2 = fileId2 ? '=HYPERLINK("' + fileUrl2 + '", "查看個人資料提供同意書")' : '';
-
-//     sheet.appendRow([studentID, paymentMethod, bankAccount, userEmail, classname, sitenum, studentid, studentname, personalid, fileLink1, fileLink2]);
-//     Logger.log('Bank account saved successfully');
-// }
-
-
-//                          學號	    退款帳戶	登入身份	退款方式       班級	     座號	  學號	      學生姓名	       學生身分證 帳戶姓名	法定代理人身分證號碼	法定代理人生日	上傳附件1	上傳附件2	上傳附件3	上傳附件4
 function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, studentPid, accountname, parentPid, parentBirth, fileUpload1, fileUpload2, fileAttachment1, fileAttachment2, fileAttachment3) {
     Logger.log('Saving bank account for student ID: ' + studentID);
     var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
@@ -78,8 +71,8 @@ function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, clas
     var fileLink4 = fileAttachment2 ? '=HYPERLINK("' + fileUrl4 + '", "附件2:學生各款項轉帳至非受款人本人帳戶同意書")' : '';
     var fileUrl5 = fileAttachment3 ? 'https://drive.google.com/file/d/' + fileAttachment3 + '/view' : '';
     var fileLink5 = fileAttachment3 ? '=HYPERLINK("' + fileUrl5 + '", "附件3:領用現金同意書")' : '';
-    //                 時間         學號	退款方式	    退款帳戶	登入身份	班級	     座號	  學號	      學生姓名	     帳戶姓名  學生身分證 	法定代理人身分證號碼	法定代理人生日	             上傳1	    上傳2	    附件1	   附件2       附件3
-    sheet.appendRow([timestamp, `'${studentID}`, paymentMethod, `'${bankAccount}`, userEmail, classname, `'${sitenum}`, `'${studentid}`, studentname, accountname, studentPid, parentPid, parentBirth, fileLink1, fileLink2, fileLink3, fileLink4, fileLink5]);
+    
+    sheet.appendRow([timestamp, "'" + studentID, paymentMethod, "'" + bankAccount, userEmail, classname, "'" + sitenum, "'" + studentid, studentname, accountname, studentPid, parentPid, parentBirth, fileLink1, fileLink2, fileLink3, fileLink4, fileLink5]);
     Logger.log('Bank account saved successfully');
 }
 
@@ -106,8 +99,6 @@ function loadFormBasedOnPaymentMethod(paymentMethod, userEmail, userAccount) {
 }
 
 function uploadFile(base64Data, fileName) {
-    //555@stu: 匯款帳戶檔案封面// https://drive.google.com/drive/folders/1bQZN_6FEMeLwfNQxCZWx-S9LC7pgJ-Lu?usp=drive_link
-
     var folder = DriveApp.getFolderById('1bQZN_6FEMeLwfNQxCZWx-S9LC7pgJ-Lu'); // 替換為你的文件夾 ID
     var blob = Utilities.newBlob(Utilities.base64Decode(base64Data), undefined, fileName);
     var file = folder.createFile(blob);
