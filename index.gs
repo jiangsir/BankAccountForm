@@ -30,6 +30,31 @@ function doGet() {
         .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
+// 新增帳號遮蔽函數
+function maskBankAccount(accountInfo) {
+    if (!accountInfo) return accountInfo;
+    
+    // 如果包含冒號，分離方式和帳號
+    if (accountInfo.includes(':')) {
+        var parts = accountInfo.split(':');
+        var method = parts[0];
+        var account = parts[1];
+        
+        if (account && account.length > 6) {
+            // 保留前3碼和後3碼，中間用星號遮蔽
+            var masked = account.substring(0, 3) + '*'.repeat(account.length - 6) + account.substring(account.length - 3);
+            return method + ':' + masked;
+        } else if (account && account.length > 2) {
+            // 短帳號處理
+            var masked = account.charAt(0) + '*'.repeat(account.length - 2) + account.charAt(account.length - 1);
+            return method + ':' + masked;
+        }
+    }
+    
+    return accountInfo;
+}
+
+// 修改現有的 getBankAccount 函數
 function getBankAccount(studentID) {
     Logger.log('Checking student ID: ' + studentID);
     var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
@@ -40,9 +65,11 @@ function getBankAccount(studentID) {
 
     var data = sheet.getDataRange().getValues();
     for (var i = 1; i < data.length; i++) {
-        if (data[i][1] == studentID) { // data[i][1] 代表 背後資料表的第二個欄位
+        if (data[i][1] == studentID) { // data[i][1] 代表背後資料表的第二個欄位
             Logger.log('Found studentID' + data[i][1] + ' bank account: ' + data[i][2]);
-            return data[i][2] + ':' + data[i][3]; // 返回銀行帳號
+            var result = data[i][2] + ':' + data[i][3]; // 原始結果
+            var maskedResult = maskBankAccount(result); // 遮蔽後的結果
+            return maskedResult; // 返回遮蔽後的銀行帳號
         }
     }
     Logger.log('Student ID:' + studentID + ' not found');
