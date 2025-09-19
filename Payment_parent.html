@@ -5,7 +5,7 @@
     <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>學生各項費用領款及退費登記系統 - 法定代理人帳戶</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -14,22 +14,251 @@
 
     <!-- Include Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- 引用共用樣式 -->
+    <?!= HtmlService.createHtmlOutputFromFile('stylecss').getContent() ?>
+    
     <!-- Custom CSS -->
     <style>
         h1 {
-            font-size: 5rem;
-            /* Change this to adjust the size of the h1 text */
+            font-size: 4rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #555;
+            font-weight: 400;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 500;
         }
 
         .form-control {
-            height: auto;
-            /* Change this to adjust the size of the input field */
-            font-size: 1.5rem;
-            /* Change this to adjust the size of the input text */
+            height: 50px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .form-control[readonly] {
+            background-color: #f8f9fa;
+            border-color: #e9ecef;
+        }
+
+        .btn {
+            font-size: 1.2rem;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            border-color: #004085;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-lg {
+            padding: 15px 35px;
+            font-size: 1.3rem;
+        }
+
+        .btn-block {
+            width: 100%;
         }
 
         .invisible {
             opacity: 0;
+        }
+
+        .container-main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .system-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .user-info {
+            background: #e8f4f8;
+            border: 2px solid #bee5eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group label .required {
+            color: #dc3545;
+        }
+
+        .upload-section {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .upload-section h4 {
+            color: #856404;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .attachment-link {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .attachment-link a {
+            color: #155724;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attachment-link a:hover {
+            color: #0c5460;
+            text-decoration: underline;
+        }
+
+        .payment-method-display {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-weight: 600;
+            color: #856404;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .student-id-display {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-weight: 600;
+            color: #0c5460;
+        }
+
+        .modal-header {
+            background: #f8d7da;
+            border-bottom: 1px solid #f5c6cb;
+        }
+
+        .modal-title {
+            color: #721c24;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .required-fields-note {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .student-info-section {
+            background: #e2f3ff;
+            border: 2px solid #b8e0ff;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .parent-info-section {
+            background: #fff2e6;
+            border: 2px solid #ffd9b3;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .container-main {
+                padding: 10px;
+            }
+            
+            .form-section, .student-info-section, .parent-info-section {
+                padding: 20px 15px;
+            }
         }
     </style>
     <script>
@@ -177,16 +406,15 @@
         function updatingButton() {
             var saveButton = document.getElementById('saveButton');
             saveButton.disabled = true;
-            saveButton.innerHTML = '銀行帳號儲存中...';
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 銀行帳號儲存中...';
             saveButton.classList.add('btn-secondary');
             saveButton.classList.remove('btn-primary');
         }
 
-
         function updateButton() {
             var saveButton = document.getElementById('saveButton');
             saveButton.disabled = true;
-            saveButton.innerHTML = '銀行帳號已儲存';
+            saveButton.innerHTML = '<i class="fas fa-check"></i> 銀行帳號已儲存';
             saveButton.classList.add('btn-secondary');
             saveButton.classList.remove('btn-primary');
         }
@@ -198,98 +426,243 @@
 </head>
 
 <body>
-    <div class="container d-flex vh-100">
-        <div class="row justify-content-center w-100">
-            <div class="col-md-12">
-                <h1 class="text-center mb-4">國立高雄師大附中</h1>
-                <h2 class="text-center mb-4">學生各項費用領款及退費登記系統</h2>
-                <h4>登入帳號:
-                    <?= userEmail ?>
-                </h4>
-                <h4>匯款方式:
-                    <?= paymentMethod  ?>
-                </h4>
-                <div class="input-group col-12">
-                    <input type="hidden" id="userEmail" name="userEmail" class="form-control" value="<?= userEmail ?>">
-                    <input type="hidden" id="paymentMethod" name="paymentMethod" class="form-control"
-                        value="<?= paymentMethod ?>">
+    <div class="container-main">
+        <!-- 系統標題區域 -->
+        <div class="system-header">
+            <!-- 回到首頁按鈕 -->
+            <div class="back-to-home">
+                <a href="<?= scriptUrl ?>" class="btn btn-outline-primary">
+                    <i class="fas fa-home"></i> 回到首頁
+                </a>
+            </div>
+            
+            <h1 class="mb-3">國立高雄師大附中</h1>
+            <h2 class="mb-0">學生各項費用領款及退費登記系統</h2>
+        </div>
 
-                    <div class="form-group col-12">
-                        <label for="classname">班級:</label>
-                        <input type="text" id="classname" name="classname" class="form-control" placeholder="班級">
-                    </div>
-                    <div class="form-group col-12">
-                        <label for="sitenum">座號:</label>
-                        <input type="text" id="sitenum" name="sitenum" class="form-control" placeholder="座號">
-                    </div>
-                    <div class="form-group col-12">
-                        <label for="studentname">學生姓名:</label>
-                        <input type="text" id="studentname" name="studentname" class="form-control" placeholder="學生姓名">
-                    </div>
-                    <div class="form-group col-12">
-                        <label for="studentid">學號:</label>
-                        <input type="text" id="studentid" name="studentid" class="form-control" placeholder="學號"
-                            value="<?= userAccount ?>" readonly="readonly">
-                    </div>
-                    <div class="form-group col-12">
-                        <label for="accountname">戶名(須為法定代理人姓名):</label>
-                        <input type="text" id="accountname" name="accountname" class="form-control"
-                            placeholder="戶名(須為法定代理人姓名)">
-                    </div>
-                    <div class="form-group col-12">
-                        <label for="parentPid">法定代理人身分證號碼:</label>
-                        <input type="text" id="parentPid" name="parentPid" class="form-control"
-                            placeholder="法定代理人身分證號碼">
-                    </div>
-                    <div class="form-group col-12">
-                        <label for="parentBirth">法定代理人出生年月日:</label>
-                        <input type="date" id="parentBirth" name="parentBirth" class="form-control"
-                            placeholder="法定代理人出生年月日">
-                    </div>
-                    <div class="form-group col-12">
-                        <label for="bankAccount">法定代理人匯款帳號(郵局請填局號與帳號;銀行請填匯款銀行、分行與帳號):</label>
-                        <input type="text" id="bankAccount" name="bankAccount" class="form-control"
-                            placeholder="法定代理人匯款帳號">
-                    </div>
-                    <div class="form-group col-12">
-                        <label for="fileUpload1">上傳「匯款帳戶封面檔案」:</label>
-                        <input type="file" id="fileUpload1" name="fileUpload1" class="form-control">
-                    </div>
-                    <div class="form-group col-12">
-                        <label for="fileUpload2">上傳「可供辨識之法定代理人證明文件」:</label>
-                        <input type="file" id="fileUpload2" name="fileUpload2" class="form-control">
-                    </div>
-                    <div class="form-group col-12">
-                        <h4><a
-                                href="https://docs.google.com/document/d/1Lr-_tyDJiHzRGUL8hlE4PXWswF14V6l3/edit?usp=drive_link">附件1-個人資料提供同意書</a>
-                        </h4>
-                        <label for="fileAttachment1">上傳「附件1-個人資料提供同意書」:</label>
-                        <input type="file" id="fileAttachment1" name="fileAttachment1" class="form-control">
-                    </div>
-                    <div class="form-group col-12">
-                        <h4><a
-                                href="https://docs.google.com/document/d/1nIr57ugC1RPoq-iHmChUGYwQJis0Mngp/edit?usp=drive_link">附件2-學生各款項轉帳至非受款人本人帳戶同意書</a>
-                        </h4>
-                        <label for="fileAttachment2">上傳「附件2-學生各款項轉帳至非受款人本人帳戶同意書」:</label>
-                        <input type="file" id="fileAttachment2" name="fileAttachment2" class="form-control">
+        <!-- 使用者資訊區域 -->
+        <div class="user-info">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="mb-2">
+                        <i class="fas fa-user text-primary"></i> 登入帳號
+                    </h4>
+                    <p class="mb-0"><?= userEmail ?></p>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="mb-2">
+                        <i class="fas fa-users text-warning"></i> 匯款方式
+                    </h4>
+                    <div class="payment-method-display">
+                        <i class="fas fa-user-friends"></i>
+                        <?= paymentMethod ?>
                     </div>
                 </div>
-                <div class="form-group col-12">
-                    <button id="saveButton" class="btn btn-primary btn-lg btn-block"
-                        onclick="saveParentAccount()">儲存</button>
-                </div>
-                <h4 id="output"></h4>
             </div>
         </div>
+
+        <!-- 隱藏欄位 -->
+        <input type="hidden" id="userEmail" name="userEmail" value="<?= userEmail ?>">
+        <input type="hidden" id="paymentMethod" name="paymentMethod" value="<?= paymentMethod ?>">
+
+        <!-- 學生基本資料區域 -->
+        <div class="student-info-section">
+            <h3 class="section-title">
+                <i class="fas fa-graduation-cap"></i>
+                學生基本資料
+            </h3>
+
+            <div class="required-fields-note">
+                <i class="fas fa-info-circle text-info"></i>
+                <strong>填寫說明：</strong>請完整填寫學生基本資料，標示 <span class="text-danger">*</span> 為必填欄位
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="classname">
+                            <i class="fas fa-school"></i>
+                            班級 <span class="required">*</span>
+                        </label>
+                        <input type="text" id="classname" name="classname" class="form-control" placeholder="請輸入班級">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="sitenum">
+                            <i class="fas fa-sort-numeric-up"></i>
+                            座號 <span class="required">*</span>
+                        </label>
+                        <input type="text" id="sitenum" name="sitenum" class="form-control" placeholder="請輸入座號">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="studentname">
+                            <i class="fas fa-user-graduate"></i>
+                            學生姓名 <span class="required">*</span>
+                        </label>
+                        <input type="text" id="studentname" name="studentname" class="form-control" placeholder="請輸入學生姓名">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="studentid">
+                            <i class="fas fa-id-card"></i>
+                            學號 <span class="required">*</span>
+                        </label>
+                        <input type="text" id="studentid" name="studentid" class="form-control student-id-display" 
+                               placeholder="學號" value="<?= userAccount ?>" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 法定代理人資料區域 -->
+        <div class="parent-info-section">
+            <h3 class="section-title">
+                <i class="fas fa-user-friends"></i>
+                法定代理人資料
+            </h3>
+
+            <div class="required-fields-note">
+                <i class="fas fa-exclamation-triangle text-warning"></i>
+                <strong>重要提醒：</strong>法定代理人資料須與身分證件及帳戶資料完全一致
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="accountname">
+                            <i class="fas fa-user-circle"></i>
+                            戶名(須為法定代理人姓名) <span class="required">*</span>
+                        </label>
+                        <input type="text" id="accountname" name="accountname" class="form-control" 
+                               placeholder="請輸入戶名(須為法定代理人姓名)">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="parentPid">
+                            <i class="fas fa-address-card"></i>
+                            法定代理人身分證號碼 <span class="required">*</span>
+                        </label>
+                        <input type="text" id="parentPid" name="parentPid" class="form-control" 
+                               placeholder="請輸入法定代理人身分證號碼">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="parentBirth">
+                            <i class="fas fa-calendar-alt"></i>
+                            法定代理人出生年月日 <span class="required">*</span>
+                        </label>
+                        <input type="date" id="parentBirth" name="parentBirth" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="bankAccount">
+                            <i class="fas fa-university"></i>
+                            法定代理人匯款帳號 <span class="required">*</span>
+                        </label>
+                        <input type="text" id="bankAccount" name="bankAccount" class="form-control" 
+                               placeholder="法定代理人匯款帳號">
+                        <small class="form-text text-muted">
+                            <i class="fas fa-lightbulb"></i> 
+                            郵局請填寫局號與帳號，銀行請填寫匯款銀行、分行與帳號
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 檔案上傳區域 -->
+        <div class="upload-section">
+            <h3 class="section-title">
+                <i class="fas fa-cloud-upload-alt"></i>
+                檔案上傳
+            </h3>
+
+            <div class="form-group">
+                <label for="fileUpload1">
+                    <i class="fas fa-file-upload"></i>
+                    上傳「匯款帳戶封面檔案」<span class="required">*</span>
+                </label>
+                <input type="file" id="fileUpload1" name="fileUpload1" class="form-control">
+                <small class="form-text text-muted">
+                    <i class="fas fa-info-circle"></i> 
+                    請上傳法定代理人帳戶的存摺封面或帳戶資料證明文件
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="fileUpload2">
+                    <i class="fas fa-file-upload"></i>
+                    上傳「可供辨識之法定代理人證明文件」<span class="required">*</span>
+                </label>
+                <input type="file" id="fileUpload2" name="fileUpload2" class="form-control">
+                <small class="form-text text-muted">
+                    <i class="fas fa-info-circle"></i> 
+                    請上傳法定代理人身分證或其他官方身分證明文件
+                </small>
+            </div>
+
+            <div class="attachment-link">
+                <a href="https://docs.google.com/document/d/1Lr-_tyDJiHzRGUL8hlE4PXWswF14V6l3/edit?usp=drive_link" target="_blank">
+                    <i class="fas fa-download"></i>
+                    附件1-個人資料提供同意書
+                </a>
+            </div>
+
+            <div class="form-group">
+                <label for="fileAttachment1">
+                    <i class="fas fa-file-upload"></i>
+                    上傳「附件1-個人資料提供同意書」<span class="required">*</span>
+                </label>
+                <input type="file" id="fileAttachment1" name="fileAttachment1" class="form-control">
+            </div>
+
+            <div class="attachment-link">
+                <a href="https://docs.google.com/document/d/1nIr57ugC1RPoq-iHmChUGYwQJis0Mngp/edit?usp=drive_link" target="_blank">
+                    <i class="fas fa-download"></i>
+                    附件2-學生各款項轉帳至非受款人本人帳戶同意書
+                </a>
+            </div>
+
+            <div class="form-group">
+                <label for="fileAttachment2">
+                    <i class="fas fa-file-upload"></i>
+                    上傳「附件2-學生各款項轉帳至非受款人本人帳戶同意書」<span class="required">*</span>
+                </label>
+                <input type="file" id="fileAttachment2" name="fileAttachment2" class="form-control">
+            </div>
+        </div>
+
+        <!-- 提交按鈕 -->
+        <div class="text-center">
+            <button id="saveButton" class="btn btn-primary btn-lg btn-block" onclick="saveParentAccount()">
+                <i class="fas fa-save"></i> 儲存資料
+            </button>
+        </div>
+
+        <h4 id="output" class="mt-3 text-center"></h4>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
-        aria-hidden="true">
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="errorModalLabel">錯誤</h5>
+                    <h5 class="modal-title" id="errorModalLabel">
+                        <i class="fas fa-exclamation-triangle"></i> 錯誤提醒
+                    </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -298,7 +671,9 @@
                     <!-- 錯誤消息將顯示在這裡 -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times"></i> 關閉
+                    </button>
                 </div>
             </div>
         </div>

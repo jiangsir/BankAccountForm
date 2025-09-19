@@ -14,6 +14,10 @@
 
     <!-- Include Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    
+    <!-- 引用共用樣式 -->
+    <?!= HtmlService.createHtmlOutputFromFile('stylecss').getContent() ?>
+    
     <!-- Custom CSS -->
     <style>
         h1 {
@@ -79,6 +83,22 @@
             border-radius: 5px;
             border-left: 4px solid #007bff;
         }
+
+        .text-right {
+            text-align: right !important;
+        }
+
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #6c757d;
+            background: transparent;
+        }
+
+        .btn-outline-secondary:hover {
+            color: white;
+            background: #6c757d;
+            border-color: #6c757d;
+        }
     </style>
 </head>
 
@@ -86,6 +106,13 @@
     <div class="container d-flex vh-100">
         <div class="row justify-content-center w-100 align-items-center">
             <div class="col-md-10">
+                <!-- 回到首頁按鈕 -->
+                <div class="text-right mb-3">
+                    <a href="<?= scriptUrl ?>" class="btn btn-outline-secondary">
+                        <i class="fas fa-home"></i> 回到首頁
+                    </a>
+                </div>
+                
                 <h1 class="text-center mb-4">國立高雄師大附中</h1>
                 <h2 class="text-center mb-4">學生各項費用領款及退費登記系統</h2>
                 
@@ -118,15 +145,6 @@
                         <strong>點擊上方「使用學生帳號登入」按鈕，選擇學生帳號登入。</strong>
                     </div>
                    
-                </div>
-
-                <div class="mt-4 text-center">
-                    <small class="text-muted">
-                        <strong>注意事項：</strong><br>
-                        • 請確認您已擁有 @stu.nknush.kh.edu.tw 帳號<br>
-                        • 如忘記密碼，請聯繫學校資訊組<br>
-                        • 系統僅限學生帳號使用
-                    </small>
                 </div>
             </div>
         </div>

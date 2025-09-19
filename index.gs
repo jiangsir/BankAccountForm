@@ -5,6 +5,7 @@ function doGet() {
     var userEmail = Session.getActiveUser().getEmail();
     var userAccount = userEmail.split('@')[0];
     var userDomain = userEmail.split('@')[1];
+    var scriptUrl = ScriptApp.getService().getUrl(); // 在這裡取得 URL
 
     // 檢查是否為有效的學生帳號
     if (userDomain !== 'stu.nknush.kh.edu.tw') {
@@ -12,7 +13,7 @@ function doGet() {
         errorTemplate.userEmail = userEmail;
         errorTemplate.userAccount = userAccount;
         errorTemplate.userDomain = userDomain;
-        errorTemplate.getScriptUrl = getScriptUrl; // 加入這行
+        errorTemplate.scriptUrl = scriptUrl; // 傳遞給模板
         return errorTemplate.evaluate()
             .setTitle('登入驗證 - 國立高雄師大附中')
             .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
@@ -23,14 +24,10 @@ function doGet() {
     template.userEmail = userEmail;
     template.userAccount = userAccount;
     template.userDomain = userDomain;
+    template.scriptUrl = scriptUrl; // 傳遞給模板
     return template.evaluate()
         .setTitle('學生各項費用領款及退費登記系統')
         .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-}
-
-// 新增這個輔助函數
-function getScriptUrl() {
-    return ScriptApp.getService().getUrl();
 }
 
 function getBankAccount(studentID) {
@@ -80,6 +77,7 @@ function loadFormBasedOnPaymentMethod(paymentMethod, userEmail, userAccount) {
     var userEmail = Session.getActiveUser().getEmail();
     var userAccount = userEmail.split('@')[0];
     var userDomain = userEmail.split('@')[1];
+    var scriptUrl = ScriptApp.getService().getUrl(); // 在這裡取得 URL
 
     var template;
     if (paymentMethod === '現金') {
@@ -91,10 +89,13 @@ function loadFormBasedOnPaymentMethod(paymentMethod, userEmail, userAccount) {
     } else {
         template = HtmlService.createTemplateFromFile('error');
     }
+    
     template.userEmail = userEmail;
     template.userAccount = userAccount;
     template.userDomain = userDomain;
     template.paymentMethod = paymentMethod;
+    template.scriptUrl = scriptUrl; // 傳遞給模板
+    
     return template.evaluate().getContent();
 }
 

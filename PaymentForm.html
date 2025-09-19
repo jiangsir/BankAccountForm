@@ -5,7 +5,7 @@
     <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>學生各項費用領款及退費登記系統</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -14,56 +14,225 @@
 
     <!-- Include Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    
+    <!-- 引用共用樣式 -->
+    <?!= HtmlService.createHtmlOutputFromFile('stylecss').getContent() ?>
+    
     <!-- Custom CSS -->
     <style>
         h1 {
-            font-size: 5rem;
-            /* Change this to adjust the size of the h1 text */
+            font-size: 4rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #555;
+            font-weight: 400;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            color: #666;
         }
 
         .form-control {
-            height: auto;
-            /* Change this to adjust the size of the input field */
-            font-size: 4rem;
-            /* Change this to adjust the size of the input text */
+            height: 50px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .btn {
+            font-size: 1.2rem;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-success {
+            background: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            border-color: #1e7e34;
+            transform: translateY(-1px);
         }
 
         .invisible {
             opacity: 0;
         }
+
+        .user-info {
+            background: #e8f4f8;
+            border: 2px solid #bee5eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .query-section {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 100px;
+        }
+
+        .result-section.has-content {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group-append .btn {
+            height: 50px;
+        }
+
+        .welcome-text {
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        .student-id-display {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-weight: 600;
+            color: #856404;
+        }
+
+        .container-main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .query-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .query-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #495057;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .container-main {
+                padding: 10px;
+            }
+            
+            .query-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
     </style>
     <script>
         function checkStudentID() {
             var studentID = document.getElementById('studentID').value;
+            var resultSection = document.getElementById('result-section');
+            var output = document.getElementById('output');
+            
+            // 顯示載入狀態
+            output.innerHTML = '<div class="text-center"><i class="spinner-border text-primary" role="status"></i> 查詢中...</div>';
+            resultSection.classList.remove('has-content');
+            
             google.script.run.withSuccessHandler(displayResult).getBankAccount(studentID);
         }
 
         function displayResult(result) {
             var output = document.getElementById('output');
+            var resultSection = document.getElementById('result-section');
+            
             if (result) {
-                output.innerHTML = '您已填報完畢。填報的匯款方式為 ' + result;
+                output.innerHTML = `
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-circle"></i> 查詢結果</h5>
+                        <p class="mb-0">您已填報完畢。填報的匯款方式為：<strong>${result}</strong></p>
+                    </div>
+                `;
+                resultSection.classList.add('has-content');
             } else {
                 output.innerHTML = generateBankAccountForm();
+                resultSection.classList.add('has-content');
             }
         }
 
         function generateBankAccountForm() {
             return `
-<div class="input-group mb-2">
-    <div class="form-group">
-        <label for="paymentMethod">匯款方式:</label>
-        <select id="paymentMethod" name="paymentMethod" class="form-control" onchange="handlePaymentMethodChange()">
-            <option value="----">-- 請選擇匯款方式 --</option>
-            <option value="現金">現金</option>
-            <option value="受款學生本人帳戶">受款學生本人帳戶</option>
-            <option value="法定代理人帳戶">法定代理人帳戶</option>
-        </select>
-    </div>
-</div>`;
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-info-circle"></i> 首次填報</h5>
+                    <p class="mb-3">您尚未填報匯款方式，請選擇適合的選項：</p>
+                    
+                    <div class="form-group">
+                        <label for="paymentMethod">
+                            <i class="fas fa-credit-card"></i> 匯款方式：
+                        </label>
+                        <select id="paymentMethod" name="paymentMethod" class="form-control" onchange="handlePaymentMethodChange()">
+                            <option value="----">-- 請選擇匯款方式 --</option>
+                            <option value="現金">💰 現金</option>
+                            <option value="受款學生本人帳戶">🏦 受款學生本人帳戶</option>
+                            <option value="法定代理人帳戶">👨‍👩‍👧‍👦 法定代理人帳戶</option>
+                        </select>
+                    </div>
+                </div>
+            `;
         }
 
         function handlePaymentMethodChange() {
             var paymentMethod = document.getElementById('paymentMethod').value;
+            
+            if (paymentMethod === '----') {
+                return;
+            }
+            
+            // 顯示載入狀態
+            var output = document.getElementById('output');
+            output.innerHTML += '<div class="text-center mt-3"><i class="spinner-border text-primary" role="status"></i> 載入表單中...</div>';
+            
             google.script.run.withSuccessHandler(function(html) {
                 document.open();
                 document.write(html);
@@ -72,7 +241,7 @@
         }
 
         window.onload = function () {
-            checkStudentID(); // 页面加载完成后自动调用查询函数
+            checkStudentID(); // 頁面載入完成後自動調用查詢函數
         };
         
         console.log('userEmail: <?= userEmail ?>');
@@ -82,24 +251,77 @@
 </head>
 
 <body>
-    <div class="container d-flex vh-100">
-        <div class="row justify-content-center w-100">
-            <div class="col-md-12">
-                <h1 class="text-center mb-4">國立高雄師大附中</h1>
-                <h2 class="text-center mb-4">學生各項費用領款及退費登記系統</h2>
-                <h4>登入帳號: <?= userEmail ?></h4>
-                <input type="hidden" id="userEmail" name="userEmail" class="form-control" value="<?= userEmail ?>">
-                <div class="input-group mb-2">
-                    <input type="text" id="studentID" name="studentID" class="form-control" placeholder="輸入學號"
-                        value="<?= userAccount ?>" readonly="readonly">
-                    <div class="input-group-append">
-                        <button class="btn btn-success btn-lg" onclick="checkStudentID()">查詢</button>
+    <div class="container-main">
+        <!-- 系統標題區域 -->
+        <div class="system-header">
+            <h1 class="mb-3">國立高雄師大附中</h1>
+            <h2 class="mb-0">學生各項費用領款及退費登記系統</h2>
+        </div>
+
+        <!-- 使用者資訊區域 -->
+        <div class="user-info">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h4 class="welcome-text mb-0">
+                        <i class="fas fa-user"></i> 歡迎使用系統
+                    </h4>
+                    <p class="mb-0 mt-1">登入帳號：<strong><?= userEmail ?></strong></p>
+                </div>
+                <div class="col-md-6 text-md-right">
+                    <div class="student-id-display">
+                        學號：<?= userAccount ?>
                     </div>
                 </div>
-                <h4 id="output"></h4>
+            </div>
+        </div>
+
+        <!-- 隱藏欄位 -->
+        <input type="hidden" id="userEmail" name="userEmail" value="<?= userEmail ?>">
+
+        <!-- 查詢區域 -->
+        <div class="query-section">
+            <div class="query-header">
+                <h3 class="query-title">
+                    <i class="fas fa-search"></i> 查詢填報狀態
+                </h3>
+                <small class="text-muted">系統會自動查詢您的填報記錄</small>
+            </div>
+            
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <i class="fas fa-id-card"></i>
+                    </span>
+                </div>
+                <input type="text" id="studentID" name="studentID" class="form-control" 
+                       placeholder="學號" value="<?= userAccount ?>" readonly="readonly">
+                <div class="input-group-append">
+                    <button class="btn btn-success btn-lg" onclick="checkStudentID()">
+                        <i class="fas fa-search"></i> 查詢狀態
+                    </button>
+                </div>
+            </div>
+            
+            <small class="text-muted">
+                <i class="fas fa-info-circle"></i> 
+                學號已自動填入，點擊「查詢狀態」按鈕查看您的填報記錄
+            </small>
+        </div>
+
+        <!-- 結果顯示區域 -->
+        <div id="result-section" class="result-section">
+            <div id="output">
+                <div class="text-center text-muted">
+                    <i class="fas fa-clock"></i> 請點擊上方「查詢狀態」按鈕開始查詢
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <!-- 如果沒有 Font Awesome kit，可以使用 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </body>
 
 </html>
