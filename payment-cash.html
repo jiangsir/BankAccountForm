@@ -5,7 +5,7 @@
     <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>學生各項費用領款及退費登記系統 - 法定代理人帳戶</title>
+    <title>學生各項費用領款及退費登記系統 - 現金領取</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -16,10 +16,10 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
-    <!-- 引用共用樣式 -->
-    <?!= HtmlService.createHtmlOutputFromFile('stylecss').getContent() ?>
-    
+
+    <!-- 共用樣式 -->
+    <link rel="stylesheet" href="css/style.css">
+
     <!-- Custom CSS -->
     <style>
         h1 {
@@ -82,6 +82,18 @@
             border-color: #6c757d;
         }
 
+        .btn-outline-primary {
+            color: #007bff;
+            border-color: #007bff;
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            color: white;
+            background: #007bff;
+            border-color: #007bff;
+        }
+
         .btn-lg {
             padding: 15px 35px;
             font-size: 1.3rem;
@@ -106,6 +118,14 @@
             margin-bottom: 40px;
             padding: 20px 0;
             border-bottom: 2px solid #dee2e6;
+            position: relative;
+        }
+
+        .back-to-home {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         .user-info {
@@ -150,12 +170,6 @@
             margin: 20px 0;
         }
 
-        .upload-section h4 {
-            color: #856404;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
         .attachment-link {
             background: #d4edda;
             border: 1px solid #c3e6cb;
@@ -171,6 +185,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 1.1rem;
         }
 
         .attachment-link a:hover {
@@ -179,12 +194,12 @@
         }
 
         .payment-method-display {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
             border-radius: 8px;
             padding: 12px 15px;
             font-weight: 600;
-            color: #856404;
+            color: #0c5460;
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -227,37 +242,46 @@
             border-radius: 0 8px 8px 0;
         }
 
-        .student-info-section {
-            background: #e2f3ff;
-            border: 2px solid #b8e0ff;
+        .cash-highlight {
+            background: #e8f5e8;
+            border: 2px solid #c3e6cb;
             border-radius: 10px;
-            padding: 25px;
+            padding: 20px;
             margin: 20px 0;
+            text-align: center;
         }
 
-        .parent-info-section {
-            background: #fff2e6;
-            border: 2px solid #ffd9b3;
-            border-radius: 10px;
-            padding: 25px;
-            margin: 20px 0;
+        .cash-icon {
+            font-size: 3rem;
+            color: #28a745;
+            margin-bottom: 15px;
         }
 
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5rem;
             }
-            
+
             h2 {
                 font-size: 1.5rem;
             }
-            
+
             .container-main {
                 padding: 10px;
             }
-            
-            .form-section, .student-info-section, .parent-info-section {
+
+            .form-section {
                 padding: 20px 15px;
+            }
+
+            .back-to-home {
+                position: static;
+                transform: none;
+                margin-bottom: 20px;
+            }
+
+            .system-header {
+                text-align: center;
             }
         }
     </style>
@@ -273,14 +297,8 @@
             var sitenum = document.getElementById('sitenum').value;
             var studentname = document.getElementById('studentname').value;
             var studentid = document.getElementById('studentid').value;
-            var accountname = document.getElementById('accountname').value;
-            var parentPid = document.getElementById('parentPid').value;
-            var parentBirth = document.getElementById('parentBirth').value;
-            var bankAccount = document.getElementById('bankAccount').value;
-            var fileInput1 = document.getElementById('fileUpload1').files.length;
-            var fileInput2 = document.getElementById('fileUpload2').files.length;
-            var fileInput3 = document.getElementById('fileAttachment1').files.length;
-            var fileInput4 = document.getElementById('fileAttachment2').files.length;
+            var fileInput1 = document.getElementById('fileAttachment1').files.length;
+            var fileInput2 = document.getElementById('fileAttachment3').files.length;
 
             if (!classname) {
                 showError('班級未填寫');
@@ -298,130 +316,23 @@
                 showError('學號未填寫');
                 return false;
             }
-            if (!accountname) {
-                showError('帳戶姓名未填寫');
-                return false;
-            }
-            if (!parentPid) {
-                showError('法定代理人身分證號碼未填寫');
-                return false;
-            }
-            if (!parentBirth) {
-                showError('法定代理人出生年月日未填寫');
-                return false;
-            }
-            if (!bankAccount) {
-                showError('退款銀行帳戶未填寫');
-                return false;
-            }
             if (!fileInput1) {
-                showError('「匯款帳戶封面檔案」未選擇');
-                return false;
-            }
-            if (!fileInput2) {
-                showError('「可供辨識之法定代理人證明文件」未選擇');
-                return false;
-            }
-            if (!fileInput3) {
                 showError('「附件1」未選擇');
                 return false;
             }
-            if (!fileInput4) {
-                showError('「附件2」未選擇');
+            if (!fileInput2) {
+                showError('「附件3」未選擇');
                 return false;
             }
             return true;
         }
 
-        function saveParentAccount() {
+        function saveCash() {
             if (!validateFields()) {
                 return;
             }
-            updatingButton();
-
-            var classname = document.getElementById('classname').value;
-            var sitenum = document.getElementById('sitenum').value;
-            var studentname = document.getElementById('studentname').value;
-            var studentid = document.getElementById('studentid').value;
-            var accountname = document.getElementById('accountname').value;
-            var parentPid = document.getElementById('parentPid').value;
-            var parentBirth = document.getElementById('parentBirth').value;
-            var bankAccount = document.getElementById('bankAccount').value;
-            var userEmail = document.getElementById('userEmail').value;
-            var paymentMethod = document.getElementById('paymentMethod').value;
-
-            // 获取文件
-            var fileInput1 = document.getElementById('fileUpload1');
-            var fileInput2 = document.getElementById('fileUpload2');
-            var fileInput3 = document.getElementById('fileAttachment1');
-            var fileInput4 = document.getElementById('fileAttachment2');
-            
-            var file1 = fileInput1.files[0];
-            var file2 = fileInput2.files[0];
-            var file3 = fileInput3.files[0];
-            var file4 = fileInput4.files[0];
-            var files = [file1, file2, file3, file4];
-            var fileIds = [];
-
-            if (file1 || file2 || file3 || file4) {
-                var filesProcessed = 0;
-
-                var readFile = function (file, index) {
-                    if (!file) {
-                        fileIds[index] = null;
-                        filesProcessed++;
-                        checkAllFilesProcessed();
-                        return;
-                    }
-
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        var base64Data = e.target.result.split(',')[1];
-                        google.script.run.withSuccessHandler(function (fileId) {
-                            fileIds[index] = fileId;
-                            filesProcessed++;
-                            checkAllFilesProcessed();
-                        }).uploadFile(base64Data, file.name);
-                    };
-                    reader.readAsDataURL(file);
-                };
-
-                var checkAllFilesProcessed = function () {
-                    if (filesProcessed === files.length) {
-                        google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, accountname, parentPid, parentBirth, fileIds[0], fileIds[1], fileIds[2], fileIds[3], null);
-                        updateButton();
-                    }
-                };
-
-                for (var i = 0; i < files.length; i++) {
-                    readFile(files[i], i);
-                }
-            } else {
-                // 没有文件时，直接保存银行账户信息
-                google.script.run.saveDatasToSheet(studentid, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, null, accountname, parentPid, parentBirth, null, null, null, null, null);
-                updateButton();
-            }
+            alert('此為靜態展示頁面，實際資料提交請至學校系統網址操作。');
         }
-
-        function updatingButton() {
-            var saveButton = document.getElementById('saveButton');
-            saveButton.disabled = true;
-            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 銀行帳號儲存中...';
-            saveButton.classList.add('btn-secondary');
-            saveButton.classList.remove('btn-primary');
-        }
-
-        function updateButton() {
-            var saveButton = document.getElementById('saveButton');
-            saveButton.disabled = true;
-            saveButton.innerHTML = '<i class="fas fa-check"></i> 銀行帳號已儲存';
-            saveButton.classList.add('btn-secondary');
-            saveButton.classList.remove('btn-primary');
-        }
-
-        console.log('userEmail: <?= userEmail ?>');
-        console.log('userAccount: <?= userAccount ?>');
-        console.log('userDomain: <?= userDomain ?>');
     </script>
 </head>
 
@@ -431,13 +342,22 @@
         <div class="system-header">
             <!-- 回到首頁按鈕 -->
             <div class="back-to-home">
-                <a href="<?= scriptUrl ?>" class="btn btn-outline-primary">
+                <a href="index.html" class="btn btn-outline-primary">
                     <i class="fas fa-home"></i> 回到首頁
                 </a>
             </div>
-            
+
             <h1 class="mb-3">國立高雄師大附中</h1>
             <h2 class="mb-0">學生各項費用領款及退費登記系統</h2>
+        </div>
+
+        <!-- 現金領取提示區域 -->
+        <div class="cash-highlight">
+            <div class="cash-icon">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <h3 class="text-success font-weight-bold">現金領取方式</h3>
+            <p class="mb-0">您選擇了現金領取，無需提供銀行帳戶資料</p>
         </div>
 
         <!-- 使用者資訊區域 -->
@@ -447,34 +367,34 @@
                     <h4 class="mb-2">
                         <i class="fas fa-user text-primary"></i> 登入帳號
                     </h4>
-                    <p class="mb-0"><?= userEmail ?></p>
+                    <p class="mb-0" id="displayEmail"></p>
                 </div>
                 <div class="col-md-6">
                     <h4 class="mb-2">
-                        <i class="fas fa-users text-warning"></i> 匯款方式
+                        <i class="fas fa-hand-holding-usd text-success"></i> 匯款方式
                     </h4>
                     <div class="payment-method-display">
-                        <i class="fas fa-user-friends"></i>
-                        <?= paymentMethod ?>
+                        <i class="fas fa-money-bill"></i>
+                        現金
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- 隱藏欄位 -->
-        <input type="hidden" id="userEmail" name="userEmail" value="<?= userEmail ?>">
-        <input type="hidden" id="paymentMethod" name="paymentMethod" value="<?= paymentMethod ?>">
+        <input type="hidden" id="userEmail" name="userEmail" value="">
+        <input type="hidden" id="paymentMethod" name="paymentMethod" value="現金">
 
         <!-- 學生基本資料區域 -->
-        <div class="student-info-section">
+        <div class="form-section">
             <h3 class="section-title">
-                <i class="fas fa-graduation-cap"></i>
-                學生基本資料
+                <i class="fas fa-user-graduate"></i>
+                學生基本資料填寫
             </h3>
 
             <div class="required-fields-note">
                 <i class="fas fa-info-circle text-info"></i>
-                <strong>填寫說明：</strong>請完整填寫學生基本資料，標示 <span class="text-danger">*</span> 為必填欄位
+                <strong>填寫說明：</strong>請完整填寫以下資料，標示 <span class="text-danger">*</span> 為必填欄位
             </div>
 
             <div class="row">
@@ -501,7 +421,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="studentname">
-                            <i class="fas fa-user-graduate"></i>
+                            <i class="fas fa-user-circle"></i>
                             學生姓名 <span class="required">*</span>
                         </label>
                         <input type="text" id="studentname" name="studentname" class="form-control" placeholder="請輸入學生姓名">
@@ -514,70 +434,8 @@
                             <i class="fas fa-id-card"></i>
                             學號 <span class="required">*</span>
                         </label>
-                        <input type="text" id="studentid" name="studentid" class="form-control student-id-display" 
-                               placeholder="學號" value="<?= userAccount ?>" readonly="readonly">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 法定代理人資料區域 -->
-        <div class="parent-info-section">
-            <h3 class="section-title">
-                <i class="fas fa-user-friends"></i>
-                法定代理人資料
-            </h3>
-
-            <div class="required-fields-note">
-                <i class="fas fa-exclamation-triangle text-warning"></i>
-                <strong>重要提醒：</strong>法定代理人資料須與身分證件及帳戶資料完全一致
-            </div>
-
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="accountname">
-                            <i class="fas fa-user-circle"></i>
-                            戶名(須為法定代理人姓名) <span class="required">*</span>
-                        </label>
-                        <input type="text" id="accountname" name="accountname" class="form-control" 
-                               placeholder="請輸入戶名(須為法定代理人姓名)">
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="parentPid">
-                            <i class="fas fa-address-card"></i>
-                            法定代理人身分證號碼 <span class="required">*</span>
-                        </label>
-                        <input type="text" id="parentPid" name="parentPid" class="form-control" 
-                               placeholder="請輸入法定代理人身分證號碼">
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="parentBirth">
-                            <i class="fas fa-calendar-alt"></i>
-                            法定代理人出生年月日 <span class="required">*</span>
-                        </label>
-                        <input type="date" id="parentBirth" name="parentBirth" class="form-control">
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="bankAccount">
-                            <i class="fas fa-university"></i>
-                            法定代理人匯款帳號 <span class="required">*</span>
-                        </label>
-                        <input type="text" id="bankAccount" name="bankAccount" class="form-control" 
-                               placeholder="法定代理人匯款帳號">
-                        <small class="form-text text-muted">
-                            <i class="fas fa-lightbulb"></i> 
-                            郵局請填寫局號與帳號，銀行請填寫匯款銀行、分行與帳號
-                        </small>
+                        <input type="text" id="studentid" name="studentid" class="form-control student-id-display"
+                               placeholder="學號">
                     </div>
                 </div>
             </div>
@@ -589,30 +447,6 @@
                 <i class="fas fa-cloud-upload-alt"></i>
                 檔案上傳
             </h3>
-
-            <div class="form-group">
-                <label for="fileUpload1">
-                    <i class="fas fa-file-upload"></i>
-                    上傳「匯款帳戶封面檔案」<span class="required">*</span>
-                </label>
-                <input type="file" id="fileUpload1" name="fileUpload1" class="form-control">
-                <small class="form-text text-muted">
-                    <i class="fas fa-info-circle"></i> 
-                    請上傳法定代理人帳戶的存摺封面或帳戶資料證明文件
-                </small>
-            </div>
-
-            <div class="form-group">
-                <label for="fileUpload2">
-                    <i class="fas fa-file-upload"></i>
-                    上傳「可供辨識之法定代理人證明文件」<span class="required">*</span>
-                </label>
-                <input type="file" id="fileUpload2" name="fileUpload2" class="form-control">
-                <small class="form-text text-muted">
-                    <i class="fas fa-info-circle"></i> 
-                    請上傳法定代理人身分證或其他官方身分證明文件
-                </small>
-            </div>
 
             <div class="attachment-link">
                 <a href="https://docs.google.com/document/d/1Lr-_tyDJiHzRGUL8hlE4PXWswF14V6l3/edit?usp=drive_link" target="_blank">
@@ -627,27 +461,35 @@
                     上傳「附件1-個人資料提供同意書」<span class="required">*</span>
                 </label>
                 <input type="file" id="fileAttachment1" name="fileAttachment1" class="form-control">
+                <small class="form-text text-muted">
+                    <i class="fas fa-info-circle"></i>
+                    請先下載上方連結的同意書，填寫完成後上傳
+                </small>
             </div>
 
             <div class="attachment-link">
-                <a href="https://docs.google.com/document/d/1nIr57ugC1RPoq-iHmChUGYwQJis0Mngp/edit?usp=drive_link" target="_blank">
+                <a href="https://docs.google.com/document/d/1fNGUGGtQzxhbxaOgTciAWcqjDpCL9daH/edit?usp=drive_link" target="_blank">
                     <i class="fas fa-download"></i>
-                    附件2-學生各款項轉帳至非受款人本人帳戶同意書
+                    附件3-領用現金同意書
                 </a>
             </div>
 
             <div class="form-group">
-                <label for="fileAttachment2">
+                <label for="fileAttachment3">
                     <i class="fas fa-file-upload"></i>
-                    上傳「附件2-學生各款項轉帳至非受款人本人帳戶同意書」<span class="required">*</span>
+                    上傳「附件3-領用現金同意書」<span class="required">*</span>
                 </label>
-                <input type="file" id="fileAttachment2" name="fileAttachment2" class="form-control">
+                <input type="file" id="fileAttachment3" name="fileAttachment3" class="form-control">
+                <small class="form-text text-muted">
+                    <i class="fas fa-info-circle"></i>
+                    請先下載上方連結的同意書，填寫完成後上傳
+                </small>
             </div>
         </div>
 
         <!-- 提交按鈕 -->
         <div class="text-center">
-            <button id="saveButton" class="btn btn-primary btn-lg btn-block" onclick="saveParentAccount()">
+            <button id="saveButton" class="btn btn-primary btn-lg btn-block" onclick="saveCash()">
                 <i class="fas fa-save"></i> 儲存資料
             </button>
         </div>

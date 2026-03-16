@@ -1,4 +1,3 @@
-<style>
 .back-to-home {
     position: absolute;
     left: 0;
@@ -33,9 +32,8 @@
         margin-bottom: 20px;
         text-align: center;
     }
-    
+
     .system-header {
         text-align: center;
     }
 }
-</style>

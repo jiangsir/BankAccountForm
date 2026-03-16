@@ -14,10 +14,13 @@
 
     <!-- Include Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    
-    <!-- 引用共用樣式 -->
-    <?!= HtmlService.createHtmlOutputFromFile('stylecss').getContent() ?>
-    
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- 共用樣式 -->
+    <link rel="stylesheet" href="css/style.css">
+
     <!-- Custom CSS -->
     <style>
         h1 {
@@ -154,15 +157,15 @@
             h1 {
                 font-size: 2.5rem;
             }
-            
+
             h2 {
                 font-size: 1.5rem;
             }
-            
+
             .container-main {
                 padding: 10px;
             }
-            
+
             .query-header {
                 flex-direction: column;
                 align-items: flex-start;
@@ -173,32 +176,18 @@
     <script>
         function checkStudentID() {
             var studentID = document.getElementById('studentID').value;
-            var resultSection = document.getElementById('result-section');
             var output = document.getElementById('output');
-            
-            // 顯示載入狀態
-            output.innerHTML = '<div class="text-center"><i class="spinner-border text-primary" role="status"></i> 查詢中...</div>';
-            resultSection.classList.remove('has-content');
-            
-            google.script.run.withSuccessHandler(displayResult).getBankAccount(studentID);
-        }
+            var resultSection = document.getElementById('result-section');
 
-        function displayResult(result) {
-            var output = document.getElementById('output');
-            var resultSection = document.getElementById('result-section');
-            
-            if (result) {
-                output.innerHTML = `
-                    <div class="alert alert-success">
-                        <h5><i class="fas fa-check-circle"></i> 查詢結果</h5>
-                        <p class="mb-0">您已填報完畢。填報的匯款方式為：<strong>${result}</strong></p>
-                    </div>
-                `;
-                resultSection.classList.add('has-content');
-            } else {
+            if (!studentID) {
                 output.innerHTML = generateBankAccountForm();
                 resultSection.classList.add('has-content');
+                return;
             }
+
+            // 靜態展示：直接顯示填報表單
+            output.innerHTML = generateBankAccountForm();
+            resultSection.classList.add('has-content');
         }
 
         function generateBankAccountForm() {
@@ -206,7 +195,7 @@
                 <div class="alert alert-info">
                     <h5><i class="fas fa-info-circle"></i> 首次填報</h5>
                     <p class="mb-3">您尚未填報匯款方式，請選擇適合的選項：</p>
-                    
+
                     <div class="form-group">
                         <label for="paymentMethod">
                             <i class="fas fa-credit-card"></i> 匯款方式：
@@ -224,29 +213,25 @@
 
         function handlePaymentMethodChange() {
             var paymentMethod = document.getElementById('paymentMethod').value;
-            
+
             if (paymentMethod === '----') {
                 return;
             }
-            
-            // 顯示載入狀態
-            var output = document.getElementById('output');
-            output.innerHTML += '<div class="text-center mt-3"><i class="spinner-border text-primary" role="status"></i> 載入表單中...</div>';
-            
-            google.script.run.withSuccessHandler(function(html) {
-                document.open();
-                document.write(html);
-                document.close();
-            }).loadFormBasedOnPaymentMethod(paymentMethod);
+
+            var pageMap = {
+                '現金': 'payment-cash.html',
+                '受款學生本人帳戶': 'payment-student.html',
+                '法定代理人帳戶': 'payment-parent.html'
+            };
+
+            if (pageMap[paymentMethod]) {
+                window.location.href = pageMap[paymentMethod];
+            }
         }
 
         window.onload = function () {
-            checkStudentID(); // 頁面載入完成後自動調用查詢函數
+            checkStudentID();
         };
-        
-        console.log('userEmail: <?= userEmail ?>');
-        console.log('userAccount: <?= userAccount ?>');
-        console.log('userDomain: <?= userDomain ?>');
     </script>
 </head>
 
@@ -265,18 +250,18 @@
                     <h4 class="welcome-text mb-0">
                         <i class="fas fa-user"></i> 歡迎使用系統
                     </h4>
-                    <p class="mb-0 mt-1">登入帳號：<strong><?= userEmail ?></strong></p>
+                    <p class="mb-0 mt-1">登入帳號：<strong id="displayEmail"></strong></p>
                 </div>
                 <div class="col-md-6 text-md-right">
                     <div class="student-id-display">
-                        學號：<?= userAccount ?>
+                        學號：<span id="displayAccount"></span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- 隱藏欄位 -->
-        <input type="hidden" id="userEmail" name="userEmail" value="<?= userEmail ?>">
+        <input type="hidden" id="userEmail" name="userEmail" value="">
 
         <!-- 查詢區域 -->
         <div class="query-section">
@@ -284,27 +269,27 @@
                 <h3 class="query-title">
                     <i class="fas fa-search"></i> 查詢填報狀態
                 </h3>
-                <small class="text-muted">系統會自動查詢您的填報記錄</small>
+                <small class="text-muted">請輸入學號後查詢</small>
             </div>
-            
+
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text">
                         <i class="fas fa-id-card"></i>
                     </span>
                 </div>
-                <input type="text" id="studentID" name="studentID" class="form-control" 
-                       placeholder="學號" value="<?= userAccount ?>" readonly="readonly">
+                <input type="text" id="studentID" name="studentID" class="form-control"
+                       placeholder="學號">
                 <div class="input-group-append">
                     <button class="btn btn-success btn-lg" onclick="checkStudentID()">
                         <i class="fas fa-search"></i> 查詢狀態
                     </button>
                 </div>
             </div>
-            
+
             <small class="text-muted">
-                <i class="fas fa-info-circle"></i> 
-                學號已自動填入，點擊「查詢狀態」按鈕查看您的填報記錄
+                <i class="fas fa-info-circle"></i>
+                請輸入學號後點擊「查詢狀態」按鈕
             </small>
         </div>
 
@@ -317,11 +302,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Font Awesome Icons -->
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
-    <!-- 如果沒有 Font Awesome kit，可以使用 CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </body>
 
 </html>

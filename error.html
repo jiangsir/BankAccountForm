@@ -5,7 +5,7 @@
     <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>登入驗證 - 國立高雄師大附中</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -14,10 +14,13 @@
 
     <!-- Include Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    
-    <!-- 引用共用樣式 -->
-    <?!= HtmlService.createHtmlOutputFromFile('stylecss').getContent() ?>
-    
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- 共用樣式 -->
+    <link rel="stylesheet" href="css/style.css">
+
     <!-- Custom CSS -->
     <style>
         h1 {
@@ -108,14 +111,14 @@
             <div class="col-md-10">
                 <!-- 回到首頁按鈕 -->
                 <div class="text-right mb-3">
-                    <a href="<?= scriptUrl ?>" class="btn btn-outline-secondary">
+                    <a href="index.html" class="btn btn-outline-secondary">
                         <i class="fas fa-home"></i> 回到首頁
                     </a>
                 </div>
-                
+
                 <h1 class="text-center mb-4">國立高雄師大附中</h1>
                 <h2 class="text-center mb-4">學生各項費用領款及退費登記系統</h2>
-                
+
                 <div class="alert alert-info text-center">
                     <h4 class="mb-3">⚠️ 所使用的帳號不符合使用資格。</h4>
                     <p class="mb-4">只接受 <strong>@stu.nknush.kh.edu.tw</strong> 本校學生帳號登入系統</p>
@@ -135,11 +138,10 @@
 
                 <div class="instruction-box">
                     <h4 class="text-center mb-3">📋 使用說明</h4>
-                    
+
                     <div class="step">
                         <strong>點擊上方「使用學生帳號登入」按鈕，選擇學生帳號登入。</strong>
                     </div>
-                   
                 </div>
             </div>
         </div>
