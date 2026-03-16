@@ -239,6 +239,18 @@
         }
     </style>
     <script>
+        const GAS_URL = 'YOUR_GAS_WEBAPP_URL'; // 替換為你的 GAS Web App 網址
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const userEmail = urlParams.get('email') || '';
+        const userAccount = urlParams.get('account') || '';
+
+        window.onload = function () {
+            document.getElementById('displayEmail').textContent = userEmail;
+            document.getElementById('userEmail').value = userEmail;
+            document.getElementById('studentid').value = userAccount;
+        };
+
         function showError(message) {
             var modalBody = document.getElementById('modalBody');
             modalBody.innerHTML = message;
@@ -255,46 +267,76 @@
             var fileInput1 = document.getElementById('fileUpload1').files.length;
             var fileInput2 = document.getElementById('fileAttachment1').files.length;
 
-            if (!classname) {
-                showError('班級未填寫');
-                return false;
-            }
-            if (!sitenum) {
-                showError('座號未填寫');
-                return false;
-            }
-            if (!studentid) {
-                showError('學號未填寫');
-                return false;
-            }
-            if (!accountname) {
-                showError('帳戶姓名未填寫');
-                return false;
-            }
-            if (!studentPid) {
-                showError('學生身分證號碼未填寫');
-                return false;
-            }
-            if (!bankAccount) {
-                showError('匯款帳號未填寫');
-                return false;
-            }
-            if (!fileInput1) {
-                showError('「匯款帳戶封面檔案」未選擇');
-                return false;
-            }
-            if (!fileInput2) {
-                showError('「附件1」未選擇');
-                return false;
-            }
+            if (!classname) { showError('班級未填寫'); return false; }
+            if (!sitenum) { showError('座號未填寫'); return false; }
+            if (!studentid) { showError('學號未填寫'); return false; }
+            if (!accountname) { showError('帳戶姓名未填寫'); return false; }
+            if (!studentPid) { showError('學生身分證號碼未填寫'); return false; }
+            if (!bankAccount) { showError('匯款帳號未填寫'); return false; }
+            if (!fileInput1) { showError('「匯款帳戶封面檔案」未選擇'); return false; }
+            if (!fileInput2) { showError('「附件1」未選擇'); return false; }
             return true;
         }
 
-        function saveStudentAccount() {
-            if (!validateFields()) {
-                return;
+        function uploadFileToGAS(file) {
+            return new Promise(function(resolve, reject) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var base64Data = e.target.result.split(',')[1];
+                    fetch(GAS_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'uploadFile', base64Data: base64Data, fileName: file.name })
+                    })
+                    .then(function(res) { return res.json(); })
+                    .then(function(json) { resolve(json.fileId); })
+                    .catch(reject);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function saveStudentAccount() {
+            if (!validateFields()) return;
+
+            var saveButton = document.getElementById('saveButton');
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 銀行帳號儲存中...';
+            saveButton.classList.replace('btn-primary', 'btn-secondary');
+
+            try {
+                var file1 = document.getElementById('fileUpload1').files[0];
+                var file2 = document.getElementById('fileAttachment1').files[0];
+                var fileId1 = file1 ? await uploadFileToGAS(file1) : null;
+                var fileId2 = file2 ? await uploadFileToGAS(file2) : null;
+
+                var accountname = document.getElementById('accountname').value;
+                await fetch(GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'saveDatasToSheet',
+                        studentID: userAccount,
+                        bankAccount: document.getElementById('bankAccount').value,
+                        userEmail: userEmail,
+                        paymentMethod: '受款學生本人帳戶',
+                        classname: document.getElementById('classname').value,
+                        sitenum: document.getElementById('sitenum').value,
+                        studentid: document.getElementById('studentid').value,
+                        studentname: accountname,
+                        studentPid: document.getElementById('studentPid').value,
+                        accountname: accountname,
+                        parentPid: null, parentBirth: null,
+                        fileUpload1: fileId1, fileUpload2: null,
+                        fileAttachment1: fileId2, fileAttachment2: null, fileAttachment3: null
+                    })
+                });
+
+                saveButton.innerHTML = '<i class="fas fa-check"></i> 銀行帳號已儲存';
+            } catch(err) {
+                saveButton.disabled = false;
+                saveButton.classList.replace('btn-secondary', 'btn-primary');
+                saveButton.innerHTML = '<i class="fas fa-save"></i> 儲存資料';
+                showError('儲存失敗，請稍後再試。');
             }
-            alert('此為靜態展示頁面，實際資料提交請至學校系統網址操作。');
         }
     </script>
 </head>

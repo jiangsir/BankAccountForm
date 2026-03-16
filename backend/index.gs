@@ -1,60 +1,86 @@
-var SHEET_ID = '1w8RUxFUORbe3jiQuNRM8ISENMlEBRlLSto-aNXzESjk'; // 替換為你的 Google Sheet ID
-var SHEET_NAME = 'Sheet1'; // 替換為你的工作表名稱
+var SHEET_ID = '1w8RUxFUORbe3jiQuNRM8ISENMlEBRlLSto-aNXzESjk';
+var SHEET_NAME = 'Sheet1';
+var GITHUB_PAGES_URL = 'https://YOUR_USERNAME.github.io/YOUR_REPO'; // 替換為你的 GitHub Pages 網址
 
-function doGet() {
+// 入口：Google 帳號驗證，通過後轉址到 GitHub Pages
+function doGet(e) {
+    // API：查詢帳號填報狀態
+    if (e.parameter.action === 'getBankAccount') {
+        var studentID = e.parameter.studentID;
+        var result = getBankAccount(studentID);
+        return ContentService
+            .createTextOutput(JSON.stringify({ success: true, data: result }))
+            .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 驗證 Google 帳號，轉址到 GitHub Pages
     var userEmail = Session.getActiveUser().getEmail();
     var userAccount = userEmail.split('@')[0];
     var userDomain = userEmail.split('@')[1];
-    var scriptUrl = ScriptApp.getService().getUrl(); // 在這裡取得 URL
 
-    // 檢查是否為有效的學生帳號
+    var redirectUrl;
     if (userDomain !== 'stu.nknush.kh.edu.tw') {
-        var errorTemplate = HtmlService.createTemplateFromFile('error');
-        errorTemplate.userEmail = userEmail;
-        errorTemplate.userAccount = userAccount;
-        errorTemplate.userDomain = userDomain;
-        errorTemplate.scriptUrl = scriptUrl; // 傳遞給模板
-        return errorTemplate.evaluate()
-            .setTitle('登入驗證 - 國立高雄師大附中')
-            .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+        redirectUrl = GITHUB_PAGES_URL + '/error.html?email=' + encodeURIComponent(userEmail);
+    } else {
+        redirectUrl = GITHUB_PAGES_URL + '/index.html'
+            + '?email=' + encodeURIComponent(userEmail)
+            + '&account=' + encodeURIComponent(userAccount);
     }
 
-    // 如果是有效帳號，顯示表單
-    var template = HtmlService.createTemplateFromFile('PaymentForm');
-    template.userEmail = userEmail;
-    template.userAccount = userAccount;
-    template.userDomain = userDomain;
-    template.scriptUrl = scriptUrl; // 傳遞給模板
-    return template.evaluate()
-        .setTitle('學生各項費用領款及退費登記系統')
-        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+    return HtmlService.createHtmlOutput(
+        '<script>window.location.href = "' + redirectUrl + '";</script>'
+    );
 }
 
-// 新增帳號遮蔽函數
+// API：處理資料儲存與檔案上傳
+function doPost(e) {
+    var data = JSON.parse(e.postData.contents);
+    var action = data.action;
+
+    if (action === 'uploadFile') {
+        var fileId = uploadFile(data.base64Data, data.fileName);
+        return ContentService
+            .createTextOutput(JSON.stringify({ success: true, fileId: fileId }))
+            .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (action === 'saveDatasToSheet') {
+        saveDatasToSheet(
+            data.studentID, data.bankAccount, data.userEmail, data.paymentMethod,
+            data.classname, data.sitenum, data.studentid, data.studentname,
+            data.studentPid, data.accountname, data.parentPid, data.parentBirth,
+            data.fileUpload1, data.fileUpload2, data.fileAttachment1, data.fileAttachment2, data.fileAttachment3
+        );
+        return ContentService
+            .createTextOutput(JSON.stringify({ success: true }))
+            .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService
+        .createTextOutput(JSON.stringify({ success: false, error: 'Unknown action' }))
+        .setMimeType(ContentService.MimeType.JSON);
+}
+
 function maskBankAccount(accountInfo) {
     if (!accountInfo) return accountInfo;
-    
-    // 如果包含冒號，分離方式和帳號
+
     if (accountInfo.includes(':')) {
         var parts = accountInfo.split(':');
         var method = parts[0];
         var account = parts[1];
-        
+
         if (account && account.length > 6) {
-            // 保留前3碼和後3碼，中間用星號遮蔽
             var masked = account.substring(0, 3) + '*'.repeat(account.length - 6) + account.substring(account.length - 3);
             return method + ':' + masked;
         } else if (account && account.length > 2) {
-            // 短帳號處理
             var masked = account.charAt(0) + '*'.repeat(account.length - 2) + account.charAt(account.length - 1);
             return method + ':' + masked;
         }
     }
-    
+
     return accountInfo;
 }
 
-// 修改現有的 getBankAccount 函數
 function getBankAccount(studentID) {
     Logger.log('Checking student ID: ' + studentID);
     var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
@@ -65,15 +91,15 @@ function getBankAccount(studentID) {
 
     var data = sheet.getDataRange().getValues();
     for (var i = 1; i < data.length; i++) {
-        if (data[i][1] == studentID) { // data[i][1] 代表背後資料表的第二個欄位
+        if (data[i][1] == studentID) {
             Logger.log('Found studentID' + data[i][1] + ' bank account: ' + data[i][2]);
-            var result = data[i][2] + ':' + data[i][3]; // 原始結果
-            var maskedResult = maskBankAccount(result); // 遮蔽後的結果
-            return maskedResult; // 返回遮蔽後的銀行帳號
+            var result = data[i][2] + ':' + data[i][3];
+            var maskedResult = maskBankAccount(result);
+            return maskedResult;
         }
     }
     Logger.log('Student ID:' + studentID + ' not found');
-    return null; // 如果沒有找到學號，返回 null
+    return null;
 }
 
 function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, studentPid, accountname, parentPid, parentBirth, fileUpload1, fileUpload2, fileAttachment1, fileAttachment2, fileAttachment3) {
@@ -95,39 +121,13 @@ function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, clas
     var fileLink4 = fileAttachment2 ? '=HYPERLINK("' + fileUrl4 + '", "附件2:學生各款項轉帳至非受款人本人帳戶同意書")' : '';
     var fileUrl5 = fileAttachment3 ? 'https://drive.google.com/file/d/' + fileAttachment3 + '/view' : '';
     var fileLink5 = fileAttachment3 ? '=HYPERLINK("' + fileUrl5 + '", "附件3:領用現金同意書")' : '';
-    
+
     sheet.appendRow([timestamp, "'" + studentID, paymentMethod, "'" + bankAccount, userEmail, classname, "'" + sitenum, "'" + studentid, studentname, accountname, studentPid, parentPid, parentBirth, fileLink1, fileLink2, fileLink3, fileLink4, fileLink5]);
     Logger.log('Bank account saved successfully');
 }
 
-function loadFormBasedOnPaymentMethod(paymentMethod, userEmail, userAccount) {
-    var userEmail = Session.getActiveUser().getEmail();
-    var userAccount = userEmail.split('@')[0];
-    var userDomain = userEmail.split('@')[1];
-    var scriptUrl = ScriptApp.getService().getUrl(); // 在這裡取得 URL
-
-    var template;
-    if (paymentMethod === '現金') {
-        template = HtmlService.createTemplateFromFile('Payment_cash');
-    } else if (paymentMethod === '受款學生本人帳戶') {
-        template = HtmlService.createTemplateFromFile('Payment_student');
-    } else if (paymentMethod === '法定代理人帳戶') {
-        template = HtmlService.createTemplateFromFile('Payment_parent');
-    } else {
-        template = HtmlService.createTemplateFromFile('error');
-    }
-    
-    template.userEmail = userEmail;
-    template.userAccount = userAccount;
-    template.userDomain = userDomain;
-    template.paymentMethod = paymentMethod;
-    template.scriptUrl = scriptUrl; // 傳遞給模板
-    
-    return template.evaluate().getContent();
-}
-
 function uploadFile(base64Data, fileName) {
-    var folder = DriveApp.getFolderById('1bQZN_6FEMeLwfNQxCZWx-S9LC7pgJ-Lu'); // 替換為你的文件夾 ID
+    var folder = DriveApp.getFolderById('1bQZN_6FEMeLwfNQxCZWx-S9LC7pgJ-Lu');
     var blob = Utilities.newBlob(Utilities.base64Decode(base64Data), undefined, fileName);
     var file = folder.createFile(blob);
     return file.getId();
