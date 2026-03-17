@@ -133,7 +133,7 @@
                                 '<h4 class="mb-3">⚠️ 所使用的帳號不符合使用資格。</h4>'
                                 + '<p class="mb-1">登入帳號：<strong>' + email + '</strong></p>'
                                 + '<p class="mb-0">只接受 <strong>@' + ALLOWED_DOMAIN + '</strong> 本校學生帳號登入系統</p>';
-                            document.getElementById('login-btn-text').textContent = '切換帳號重新登入';
+                            document.getElementById('login-btn-text').textContent = '切換帳號為 @' + ALLOWED_DOMAIN + ' 後重新登入';
                         } else {
                             window.location.href = 'index.html'
                                 + '?email=' + encodeURIComponent(email)

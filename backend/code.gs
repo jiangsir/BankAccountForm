@@ -1,18 +1,14 @@
 var SHEET_ID = '1w8RUxFUORbe3jiQuNRM8ISENMlEBRlLSto-aNXzESjk';
 var SHEET_NAME = 'Sheet1';
-var GITHUB_PAGES_URL = 'https://jiangsir.github.io/BankAccountForm/'; // 替換為你的 GitHub Pages 網址
-var BACKEND_VERSION = 'v2.0.3';
+var BACKEND_VERSION = 'v2.0.5';
 
-// 入口：Google 帳號驗證，通過後轉址到 GitHub Pages
 function doGet(e) {
-    // API：回傳後端版本
     if (e.parameter.action === 'getVersion') {
         return ContentService
             .createTextOutput(JSON.stringify({ success: true, data: BACKEND_VERSION }))
             .setMimeType(ContentService.MimeType.JSON);
     }
 
-    // API：查詢帳號填報狀態
     if (e.parameter.action === 'getBankAccount') {
         var studentID = e.parameter.studentID;
         var result = getBankAccount(studentID);
@@ -21,23 +17,9 @@ function doGet(e) {
             .setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 驗證 Google 帳號，轉址到 GitHub Pages
-    var userEmail = Session.getActiveUser().getEmail();
-    var userAccount = userEmail.split('@')[0];
-    var userDomain = userEmail.split('@')[1];
-
-    var redirectUrl;
-    if (userDomain !== 'stu.nknush.kh.edu.tw') {
-        redirectUrl = GITHUB_PAGES_URL + '/login.html?email=' + encodeURIComponent(userEmail);
-    } else {
-        redirectUrl = GITHUB_PAGES_URL + '/index.html'
-            + '?email=' + encodeURIComponent(userEmail)
-            + '&account=' + encodeURIComponent(userAccount);
-    }
-
-    return HtmlService.createHtmlOutput(
-        '<script>window.location.href = "' + redirectUrl + '";</script>'
-    );
+    return ContentService
+        .createTextOutput(JSON.stringify({ success: false, error: 'Unknown action' }))
+        .setMimeType(ContentService.MimeType.JSON);
 }
 
 // API：處理資料儲存與檔案上傳
