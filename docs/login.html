@@ -108,12 +108,16 @@
     <script>
         var tokenClient;
 
+        // UI 初始化（不依賴 GIS）
         window.onload = function () {
             document.getElementById('alert-box').innerHTML =
                 '<h4 class="mb-3">🔒 請先登入學生帳號</h4>'
                 + '<p class="mb-0">只接受 <strong>@' + ALLOWED_DOMAIN + '</strong> 學生帳號登入系統</p>';
             document.getElementById('login-btn-text').textContent = '請使用 @' + ALLOWED_DOMAIN + ' 登入';
+        };
 
+        // GIS 載入完成後才初始化 tokenClient
+        window.onGoogleLibraryLoad = function () {
             tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: GOOGLE_CLIENT_ID,
                 scope: 'https://www.googleapis.com/auth/userinfo.email',
@@ -145,6 +149,10 @@
         };
 
         function handleLoginClick() {
+            if (!tokenClient) {
+                alert('Google 登入服務尚未載入，請稍後再試。');
+                return;
+            }
             tokenClient.requestAccessToken();
         }
     </script>
