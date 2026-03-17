@@ -102,3 +102,7 @@ const GOOGLE_CLIENT_ID = '...';              // Google OAuth 用戶端 ID
 const ALLOWED_DOMAIN   = 'stu.nknush.kh.edu.tw'; // 允許登入的 Google 網域
 const GAS_URL          = 'https://...';      // GAS Web App 部署網址
 ```
+
+舊版網址：
+https://script.google.com/a/macros/stu.nknush.kh.edu.tw/s/AKfycbzqmv9E-R-OPJQZU_jEeu0fy43yghl0Twn7w7SCENU5ZwBq5wWktwVpNt_OuSPU3mh0/exec
+
