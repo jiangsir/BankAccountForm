@@ -1,4 +1,4 @@
-const FRONTEND_VERSION = 'v2.0.1';
+const FRONTEND_VERSION = 'v2.0.2';
 
 function createFooter() {
     // 加底部 padding 避免內容被 footer 遮住
