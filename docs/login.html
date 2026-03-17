@@ -135,9 +135,9 @@
                                 + '<p class="mb-0">只接受 <strong>@' + ALLOWED_DOMAIN + '</strong> 本校學生帳號登入系統</p>';
                             document.getElementById('login-btn-text').textContent = '切換帳號為 @' + ALLOWED_DOMAIN + ' 後重新登入';
                         } else {
-                            window.location.href = 'index.html'
-                                + '?email=' + encodeURIComponent(email)
-                                + '&account=' + encodeURIComponent(account);
+                            sessionStorage.setItem('userEmail', email);
+                            sessionStorage.setItem('userAccount', account);
+                            window.location.href = 'index.html';
                         }
                     });
                 }

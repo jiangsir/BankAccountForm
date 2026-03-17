@@ -1,4 +1,4 @@
-const FRONTEND_VERSION = 'v2.1.1';
+const FRONTEND_VERSION = 'v2.1.2';
 
 const GOOGLE_CLIENT_ID = '420344483491-n9n61uisucp5m0b2s2rt4nk09di0kns2.apps.googleusercontent.com';
 const ALLOWED_DOMAIN = 'stu.nknush.kh.edu.tw';

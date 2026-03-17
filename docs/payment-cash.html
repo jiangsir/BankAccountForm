@@ -288,9 +288,9 @@
     <script src="js/config.js"></script>
     <script>
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const userEmail = urlParams.get('email') || '';
-        const userAccount = urlParams.get('account') || '';
+        
+        const userEmail = sessionStorage.getItem('userEmail') || '';
+        const userAccount = sessionStorage.getItem('userAccount') || '';
 
         window.onload = function () {
             document.getElementById('displayEmail').textContent = userEmail;
