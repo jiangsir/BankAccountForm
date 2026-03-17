@@ -1,6 +1,6 @@
 var SHEET_ID = '1w8RUxFUORbe3jiQuNRM8ISENMlEBRlLSto-aNXzESjk';
 var SHEET_NAME = 'Sheet1';
-var BACKEND_VERSION = 'v2.0.5';
+var BACKEND_VERSION = 'v2.0.6';
 
 function doGet(e) {
     if (e.parameter.action === 'getVersion') {
