@@ -285,6 +285,8 @@
             var sitenum = document.getElementById('sitenum').value;
             var studentname = document.getElementById('studentname').value;
             var studentid = document.getElementById('studentid').value;
+            var studentPid = document.getElementById('studentPid').value;
+            var studentAddress = document.getElementById('studentAddress').value;
             var accountname = document.getElementById('accountname').value;
             var parentPid = document.getElementById('parentPid').value;
             var parentBirth = document.getElementById('parentBirth').value;
@@ -298,6 +300,8 @@
             if (!sitenum) { showError('座號未填寫'); return false; }
             if (!studentname) { showError('學生姓名未填寫'); return false; }
             if (!studentid) { showError('學號未填寫'); return false; }
+            if (!studentPid) { showError('學生身分證字號未填寫'); return false; }
+            if (!studentAddress) { showError('學生戶籍地址未填寫'); return false; }
             if (!accountname) { showError('帳戶姓名未填寫'); return false; }
             if (!parentPid) { showError('法定代理人身分證號碼未填寫'); return false; }
             if (!parentBirth) { showError('法定代理人出生年月日未填寫'); return false; }
@@ -356,7 +360,8 @@
                         sitenum: document.getElementById('sitenum').value,
                         studentid: document.getElementById('studentid').value,
                         studentname: document.getElementById('studentname').value,
-                        studentPid: null,
+                        studentPid: document.getElementById('studentPid').value,
+                        studentAddress: document.getElementById('studentAddress').value,
                         accountname: document.getElementById('accountname').value,
                         parentPid: document.getElementById('parentPid').value,
                         parentBirth: document.getElementById('parentBirth').value,
@@ -467,6 +472,26 @@
                         </label>
                         <input type="text" id="studentid" name="studentid" class="form-control student-id-display"
                                placeholder="學號">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="studentPid">
+                            <i class="fas fa-address-card"></i>
+                            學生身分證字號 <span class="required">*</span>
+                        </label>
+                        <input type="text" id="studentPid" name="studentPid" class="form-control" placeholder="請輸入學生身分證字號">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="studentAddress">
+                            <i class="fas fa-home"></i>
+                            學生戶籍地址 <span class="required">*</span>
+                        </label>
+                        <input type="text" id="studentAddress" name="studentAddress" class="form-control" placeholder="請輸入學生戶籍地址">
                     </div>
                 </div>
             </div>

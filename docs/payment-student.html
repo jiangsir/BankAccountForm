@@ -263,6 +263,7 @@
             var studentid = document.getElementById('studentid').value;
             var accountname = document.getElementById('accountname').value;
             var studentPid = document.getElementById('studentPid').value;
+            var studentAddress = document.getElementById('studentAddress').value;
             var bankAccount = document.getElementById('bankAccount').value;
             var fileInput1 = document.getElementById('fileUpload1').files.length;
             var fileInput2 = document.getElementById('fileAttachment1').files.length;
@@ -271,7 +272,8 @@
             if (!sitenum) { showError('座號未填寫'); return false; }
             if (!studentid) { showError('學號未填寫'); return false; }
             if (!accountname) { showError('帳戶姓名未填寫'); return false; }
-            if (!studentPid) { showError('學生身分證號碼未填寫'); return false; }
+            if (!studentPid) { showError('學生身分證字號未填寫'); return false; }
+            if (!studentAddress) { showError('學生戶籍地址未填寫'); return false; }
             if (!bankAccount) { showError('匯款帳號未填寫'); return false; }
             if (!fileInput1) { showError('「匯款帳戶封面檔案」未選擇'); return false; }
             if (!fileInput2) { showError('「附件1」未選擇'); return false; }
@@ -323,6 +325,7 @@
                         studentid: document.getElementById('studentid').value,
                         studentname: accountname,
                         studentPid: document.getElementById('studentPid').value,
+                        studentAddress: document.getElementById('studentAddress').value,
                         accountname: accountname,
                         parentPid: null, parentBirth: null,
                         fileUpload1: fileId1, fileUpload2: null,
@@ -435,14 +438,25 @@
                     </div>
                 </div>
 
-                <div class="col-12">
+                <div class="col-md-6">
                     <div class="form-group">
                         <label for="studentPid">
                             <i class="fas fa-address-card"></i>
-                            學生身分證號碼 <span class="required">*</span>
+                            學生身分證字號 <span class="required">*</span>
                         </label>
                         <input type="text" id="studentPid" name="studentPid" class="form-control"
-                               placeholder="請輸入學生身分證號碼">
+                               placeholder="請輸入學生身分證字號">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="studentAddress">
+                            <i class="fas fa-home"></i>
+                            學生戶籍地址 <span class="required">*</span>
+                        </label>
+                        <input type="text" id="studentAddress" name="studentAddress" class="form-control"
+                               placeholder="請輸入學生戶籍地址">
                     </div>
                 </div>
 

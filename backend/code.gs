@@ -38,7 +38,7 @@ function doPost(e) {
         saveDatasToSheet(
             data.studentID, data.bankAccount, data.userEmail, data.paymentMethod,
             data.classname, data.sitenum, data.studentid, data.studentname,
-            data.studentPid, data.accountname, data.parentPid, data.parentBirth,
+            data.studentPid, data.studentAddress, data.accountname, data.parentPid, data.parentBirth,
             data.fileUpload1, data.fileUpload2, data.fileAttachment1, data.fileAttachment2, data.fileAttachment3
         );
         return ContentService
@@ -92,7 +92,7 @@ function getBankAccount(studentID) {
     return null;
 }
 
-function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, studentPid, accountname, parentPid, parentBirth, fileUpload1, fileUpload2, fileAttachment1, fileAttachment2, fileAttachment3) {
+function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, classname, sitenum, studentid, studentname, studentPid, studentAddress, accountname, parentPid, parentBirth, fileUpload1, fileUpload2, fileAttachment1, fileAttachment2, fileAttachment3) {
     Logger.log('Saving bank account for student ID: ' + studentID);
     var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
     if (!sheet) {
@@ -112,7 +112,7 @@ function saveDatasToSheet(studentID, bankAccount, userEmail, paymentMethod, clas
     var fileUrl5 = fileAttachment3 ? 'https://drive.google.com/file/d/' + fileAttachment3 + '/view' : '';
     var fileLink5 = fileAttachment3 ? '=HYPERLINK("' + fileUrl5 + '", "附件3:領用現金同意書")' : '';
 
-    sheet.appendRow([timestamp, "'" + studentID, paymentMethod, "'" + bankAccount, userEmail, classname, "'" + sitenum, "'" + studentid, studentname, accountname, studentPid, parentPid, parentBirth, fileLink1, fileLink2, fileLink3, fileLink4, fileLink5]);
+    sheet.appendRow([timestamp, "'" + studentID, paymentMethod, "'" + bankAccount, userEmail, classname, "'" + sitenum, "'" + studentid, studentname, accountname, studentPid, studentAddress, parentPid, parentBirth, fileLink1, fileLink2, fileLink3, fileLink4, fileLink5]);
     Logger.log('Bank account saved successfully');
 }
 
