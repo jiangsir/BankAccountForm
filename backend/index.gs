@@ -1,7 +1,7 @@
 var SHEET_ID = '1w8RUxFUORbe3jiQuNRM8ISENMlEBRlLSto-aNXzESjk';
 var SHEET_NAME = 'Sheet1';
 var GITHUB_PAGES_URL = 'https://jiangsir.github.io/BankAccountForm/'; // 替換為你的 GitHub Pages 網址
-var BACKEND_VERSION = 'v1.0.0';
+var BACKEND_VERSION = 'v2.0.1';
 
 // 入口：Google 帳號驗證，通過後轉址到 GitHub Pages
 function doGet(e) {
