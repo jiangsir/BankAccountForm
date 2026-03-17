@@ -103,28 +103,50 @@
             border-color: #6c757d;
         }
     </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="js/config.js"></script>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const wrongEmail = urlParams.get('email') || '';
+        var tokenClient;
 
         window.onload = function () {
-            var alertBox = document.getElementById('alert-box');
-            var loginBtn = document.getElementById('login-btn');
+            document.getElementById('alert-box').innerHTML =
+                '<h4 class="mb-3">🔒 請先登入學生帳號</h4>'
+                + '<p class="mb-0">只接受 <strong>@' + ALLOWED_DOMAIN + '</strong> 學生帳號登入系統</p>';
+            document.getElementById('login-btn-text').textContent = '請使用 @' + ALLOWED_DOMAIN + ' 登入';
 
-            if (wrongEmail) {
-                // 帳號不符
-                alertBox.innerHTML = '<h4 class="mb-3">⚠️ 所使用的帳號不符合使用資格。</h4>'
-                    + '<p class="mb-1">登入帳號：<strong>' + wrongEmail + '</strong></p>'
-                    + '<p class="mb-0">只接受 <strong>@stu.nknush.kh.edu.tw</strong> 本校學生帳號登入系統</p>';
-                document.getElementById('login-btn-text').textContent = '切換帳號重新登入';
-            } else {
-                // 尚未登入
-                alertBox.innerHTML = '<h4 class="mb-3">🔒 請先登入學生帳號</h4>'
-                    + '<p class="mb-0">請使用 <strong>@stu.nknush.kh.edu.tw</strong> 學生帳號登入系統</p>';
-                document.getElementById('login-btn-text').textContent = '請使用 @stu.nknush.kh.edu.tw 登入';
-            }
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: GOOGLE_CLIENT_ID,
+                scope: 'https://www.googleapis.com/auth/userinfo.email',
+                prompt: 'select_account',
+                callback: function (tokenResponse) {
+                    if (!tokenResponse.access_token) return;
+                    fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                        headers: { Authorization: 'Bearer ' + tokenResponse.access_token }
+                    })
+                    .then(function (r) { return r.json(); })
+                    .then(function (userInfo) {
+                        var email = userInfo.email;
+                        var domain = email.split('@')[1];
+                        var account = email.split('@')[0];
+                        if (domain !== ALLOWED_DOMAIN) {
+                            document.getElementById('alert-box').innerHTML =
+                                '<h4 class="mb-3">⚠️ 所使用的帳號不符合使用資格。</h4>'
+                                + '<p class="mb-1">登入帳號：<strong>' + email + '</strong></p>'
+                                + '<p class="mb-0">只接受 <strong>@' + ALLOWED_DOMAIN + '</strong> 本校學生帳號登入系統</p>';
+                            document.getElementById('login-btn-text').textContent = '切換帳號重新登入';
+                        } else {
+                            window.location.href = 'index.html'
+                                + '?email=' + encodeURIComponent(email)
+                                + '&account=' + encodeURIComponent(account);
+                        }
+                    });
+                }
+            });
         };
+
+        function handleLoginClick() {
+            tokenClient.requestAccessToken();
+        }
     </script>
 </head>
 
@@ -139,7 +161,7 @@
 
                 <div class="text-center mt-4">
                     <a id="login-btn" href="javascript:void(0)" class="login-btn btn-lg"
-                       onclick="window.location.href = 'https://accounts.google.com/AccountChooser?continue=' + encodeURIComponent(GAS_URL)">
+                       onclick="handleLoginClick()">
                         <svg class="google-icon" viewBox="0 0 24 24">
                             <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
