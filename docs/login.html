@@ -103,44 +103,57 @@
             border-color: #6c757d;
         }
     </style>
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyhE-zJrfkmvJ2qCaWcybISkgrRpjxhupgRvpWoe8MfJ-FduN60XDEjqcEYoWPwLCk/exec';
+        const urlParams = new URLSearchParams(window.location.search);
+        const wrongEmail = urlParams.get('email') || '';
+
+        window.onload = function () {
+            var alertBox = document.getElementById('alert-box');
+            var loginBtn = document.getElementById('login-btn');
+
+            if (wrongEmail) {
+                // 帳號不符
+                alertBox.innerHTML = '<h4 class="mb-3">⚠️ 所使用的帳號不符合使用資格。</h4>'
+                    + '<p class="mb-1">登入帳號：<strong>' + wrongEmail + '</strong></p>'
+                    + '<p class="mb-0">只接受 <strong>@stu.nknush.kh.edu.tw</strong> 本校學生帳號登入系統</p>';
+                document.getElementById('login-btn-text').textContent = '切換帳號重新登入';
+            } else {
+                // 尚未登入
+                alertBox.innerHTML = '<h4 class="mb-3">🔒 請先登入學生帳號</h4>'
+                    + '<p class="mb-0">請使用 <strong>@stu.nknush.kh.edu.tw</strong> 學生帳號登入系統</p>';
+                document.getElementById('login-btn-text').textContent = '使用學生帳號登入';
+            }
+        };
+    </script>
 </head>
 
 <body>
     <div class="container d-flex vh-100">
         <div class="row justify-content-center w-100 align-items-center">
             <div class="col-md-10">
-                <!-- 回到首頁按鈕 -->
-                <div class="text-right mb-3">
-                    <a href="index.html" class="btn btn-outline-secondary">
-                        <i class="fas fa-home"></i> 回到首頁
-                    </a>
-                </div>
-
                 <h1 class="text-center mb-4">國立高雄師大附中</h1>
                 <h2 class="text-center mb-4">學生各項費用領款及退費登記系統</h2>
 
-                <div class="alert alert-info text-center">
-                    <h4 class="mb-3">⚠️ 所使用的帳號不符合使用資格。</h4>
-                    <p class="mb-4">只接受 <strong>@stu.nknush.kh.edu.tw</strong> 本校學生帳號登入系統</p>
-                </div>
+                <div class="alert alert-info text-center" id="alert-box"></div>
 
                 <div class="text-center mt-4">
-                    <a href="https://accounts.google.com/AccountChooser?continue=https%3A%2F%2Faccounts.google.com%2Fsignin" class="login-btn btn-lg">
+                    <a id="login-btn" href="javascript:void(0)" class="login-btn btn-lg"
+                       onclick="window.location.href = GAS_URL">
                         <svg class="google-icon" viewBox="0 0 24 24">
                             <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                             <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                             <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                         </svg>
-                        用 @stu.nknush.kh.edu.tw 學生帳號登入
+                        <span id="login-btn-text">登入中…</span>
                     </a>
                 </div>
 
                 <div class="instruction-box">
                     <h4 class="text-center mb-3">📋 使用說明</h4>
-
                     <div class="step">
-                        <strong>點擊上方「使用學生帳號登入」按鈕，選擇學生帳號登入。</strong>
+                        <strong>點擊上方按鈕，選擇 @stu.nknush.kh.edu.tw 學生帳號登入。</strong>
                     </div>
                 </div>
             </div>

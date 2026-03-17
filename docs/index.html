@@ -260,6 +260,11 @@
         }
 
         window.onload = function () {
+            // 未登入則跳到 login.html
+            if (!userEmail) {
+                window.location.href = 'login.html';
+                return;
+            }
             document.getElementById('displayEmail').textContent = userEmail;
             document.getElementById('displayAccount').textContent = userAccount;
             document.getElementById('userEmail').value = userEmail;
