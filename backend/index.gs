@@ -20,7 +20,7 @@ function doGet(e) {
 
     var redirectUrl;
     if (userDomain !== 'stu.nknush.kh.edu.tw') {
-        redirectUrl = GITHUB_PAGES_URL + '/error.html?email=' + encodeURIComponent(userEmail);
+        redirectUrl = GITHUB_PAGES_URL + '/login.html?email=' + encodeURIComponent(userEmail);
     } else {
         redirectUrl = GITHUB_PAGES_URL + '/index.html'
             + '?email=' + encodeURIComponent(userEmail)
