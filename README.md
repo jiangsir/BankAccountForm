@@ -14,7 +14,7 @@
 
 | 項目 | 網址 |
 |------|------|
-| GitHub Pages | https://jiangsir.github.io/BankAccountForm/ |
+| GitHub Pages | https://ashs5550.github.io/BankAccountForm |
 | Google Sheets | https://docs.google.com/spreadsheets/d/1w8RUxFUORbe3jiQuNRM8ISENMlEBRlLSto-aNXzESjk/edit |
 | Apps Script | https://script.google.com/ |
 
@@ -31,7 +31,7 @@
 5. 應用程式類型：**網頁應用程式**
 6. 已授權的 JavaScript 來源加入：
    ```
-   https://jiangsir.github.io
+   https://ashs5550.github.io
    ```
 7. 建立後取得 **用戶端 ID**，填入 `docs/js/config.js`：
    ```js
