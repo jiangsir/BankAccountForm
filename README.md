@@ -14,8 +14,8 @@
 
 | 項目 | 網址 |
 |------|------|
-| GitHub Pages | https://ashs5550.github.io/BankAccountForm |
-| Google Sheets | https://docs.google.com/spreadsheets/d/1w8RUxFUORbe3jiQuNRM8ISENMlEBRlLSto-aNXzESjk/edit |
+| GitHub Pages(5550@tea.nknush.kh.edu.tw) | https://ashs5550.github.io/BankAccountForm |
+| Google Sheets(555@stu.nknush.kh.edu.tw) | https://docs.google.com/spreadsheets/d/1w8RUxFUORbe3jiQuNRM8ISENMlEBRlLSto-aNXzESjk/edit |
 | Apps Script | https://script.google.com/ |
 
 ---
